@@ -13,7 +13,7 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-  app.use(helmet);
+  app.use(helmet());
   const port = process.env.PORT ?? 8000;
 
   app.enableCors();
