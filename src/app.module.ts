@@ -6,6 +6,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
 import { RedisModule } from './shared/redis/redis.module';
 import { TypeOrmConfigModule } from './config/database.config';
+import { UsersModule } from './modules/users/users.module';
+import { PostsModule } from './modules/posts/posts.module';
 // import { typeormConfig } from './config/database.config';
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { TypeOrmConfigModule } from './config/database.config';
         },
       ],
     }),
+    UsersModule,
+    PostsModule,
     TypeOrmConfigModule,
     RedisModule,
   ],
