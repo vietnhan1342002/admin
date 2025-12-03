@@ -1,0 +1,32 @@
+// src/common/constants/messages.enum.ts
+export enum HttpMessages {
+  // ✅ General
+  SUCCESS = 'Operation completed successfully',
+  FAILED = 'Operation failed',
+
+  // ✅ Auth
+  LOGIN_SUCCESS = 'Login successful',
+  LOGIN_FAILED = 'Invalid username or password',
+  LOGOUT_SUCCESS = 'Logout successful',
+  UNAUTHORIZED = 'Unauthorized access',
+  FORBIDDEN = 'You do not have permission',
+
+  // ✅ User
+  USER_NOT_FOUND = 'User not found',
+  USER_CREATED = 'User created successfully',
+  USER_UPDATED = 'User updated successfully',
+  USER_DELETED = 'User deleted successfully',
+
+  // ✅ Validation
+  VALIDATION_FAILED = 'Validation failed',
+  INVALID_INPUT = 'Invalid input data',
+
+  // ✅ JWT / Token
+  TOKEN_EXPIRED = 'Token has expired',
+  TOKEN_INVALID = 'Invalid token',
+  TOKEN_NOT_FOUND = 'Token not found',
+
+  // ✅ Common CRUD
+  RECORD_NOT_FOUND = 'Record not found',
+  RECORD_ALREADY_EXISTS = 'Record already exists',
+}
