@@ -8,7 +8,6 @@ export class RedisTestController {
   // Endpoint test set & get
   @Get('set-get')
   async testSetGet(@Query('key') key: string, @Query('value') value: string) {
-    console.log(1);
     const result = await this.redisTestService.setAndGet(key, value, 60);
     return { key, value: result };
   }
