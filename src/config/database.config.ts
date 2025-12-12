@@ -13,7 +13,7 @@ export const TypeOrmConfigModule = TypeOrmModule.forRootAsync({
     database: config.get<string>('DB_NAME'),
     autoLoadEntities: true,
     synchronize: true, // Không dùng synchronize khi production / migration
-    logging: true,
+    // logging: true,
     // migrations: ['dist/migrations/*.js'], // migration chạy trên JS build
   }),
 });

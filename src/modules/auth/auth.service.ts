@@ -5,9 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import { comparePassword } from 'src/shared/utils/hashPassword';
+import { UserRole } from '../users/enum/user-role.enum';
 interface PayLoad {
   email: string;
-  role: string;
+  roles: UserRole[];
   name: string;
 }
 
@@ -29,7 +31,7 @@ export class AuthService {
 
     const tokens = await this.generateUserTokens({
       email: user.email,
-      role: user.role,
+      roles: [...user.roles],
       name: user.name,
     });
 
@@ -40,7 +42,9 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     const user = await this.usersRepository.findOne({ where: { email } });
-    if (user && user.password === password) {
+    const compared = await comparePassword(password, user!.password);
+
+    if (user && compared) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = user;
       return result;
@@ -49,9 +53,9 @@ export class AuthService {
   }
 
   async generateUserTokens(payLoad: PayLoad) {
-    const { email, role, name } = payLoad;
+    const { email, roles, name } = payLoad;
     const accessToken = await this.jwtService.signAsync(
-      { email, role, name }, // ✔ GIỜ ĐÃ ĐÚNG
+      { email, roles, name }, // ✔ GIỜ ĐÃ ĐÚNG
       { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
     const refreshToken = uuidv4();
