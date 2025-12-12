@@ -37,12 +37,14 @@ export class AuthController {
     @Body() loginDto: LoginDto,
   ) {
     const user = await this.authService.login(loginDto);
-    if (!user)
+
+    if (!user) {
       throw new ResponseException(
         HttpMessages.LOGIN_FAILED,
         HttpStatus.UNAUTHORIZED,
         HttpMessages.LOGIN_FAILED,
       );
+    }
     response.cookie('jwt', user.accessToken, {
       httpOnly: true,
       path: '/',
