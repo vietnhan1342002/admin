@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { IBaseRepository } from 'src/interfaces/IBaseRepository';
 import {
   DeepPartial,
   FindOptionsWhere,
@@ -23,7 +24,9 @@ export interface PaginatedResult<T> {
   totalPages: number;
 }
 
-export class BaseRepository<T extends ObjectLiteral> {
+export class BaseRepository<T extends ObjectLiteral>
+  implements IBaseRepository<T>
+{
   constructor(protected readonly repo: Repository<T>) {}
 
   async findAll(params?: PaginationParams): Promise<PaginatedResult<T>> {
@@ -59,7 +62,7 @@ export class BaseRepository<T extends ObjectLiteral> {
     return this.repo.save(entity);
   }
 
-  update(id: string, data: Partial<T>): Promise<T> {
+  update(id: string, data: DeepPartial<T>): Promise<T> {
     return this.repo.save({ id, ...data } as any);
   }
 
