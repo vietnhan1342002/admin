@@ -23,7 +23,7 @@ export class BaseService<T extends ObjectLiteral> {
     return this.repository.create(data);
   }
 
-  update(id: string, data: Partial<T>): Promise<T> {
+  update(id: string, data: DeepPartial<T>): Promise<T> {
     return this.repository.update(id, data);
   }
 
