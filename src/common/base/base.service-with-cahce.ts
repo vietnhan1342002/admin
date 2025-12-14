@@ -39,7 +39,7 @@ export class BaseServiceWithCache<T extends ObjectLiteral> {
     return entity;
   }
 
-  async update(id: string, data: DeepPartial<T>): Promise<T> {
+  async update(id: string, data: DeepPartial<T>): Promise<T | null> {
     const entity = await this.repository.update(id, data);
     await this.cache.del(`${this.cachePrefix}:${id}`);
     await this.cache.clearPrefix(`${this.cachePrefix}:all`);

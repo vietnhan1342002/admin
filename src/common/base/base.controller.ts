@@ -1,11 +1,18 @@
-import { Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
+import { Get, Post, Delete, Body, Param, Query, Patch } from '@nestjs/common';
 import { BaseService } from './base.service';
-import { ObjectLiteral } from 'typeorm';
+import { DeepPartial, ObjectLiteral } from 'typeorm';
 import { PaginationParams } from './base.repository';
 
-export class BaseController<T extends ObjectLiteral> {
-  constructor(protected readonly service: BaseService<T>) {}
+export class BaseController<
+  T extends ObjectLiteral,
+  CreateDTO extends DeepPartial<T>,
+  UpdateDTO extends DeepPartial<T>,
+> {
+  constructor(
+    protected readonly service: BaseService<T, CreateDTO, UpdateDTO>,
+  ) {}
 
+  @Get()
   async findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -29,12 +36,12 @@ export class BaseController<T extends ObjectLiteral> {
   }
 
   @Post()
-  async create(@Body() body: any) {
+  async create(@Body() body: CreateDTO) {
     return this.service.create(body);
   }
 
-  @Put(':id')
-  async update(@Param('id') id: string, @Body() body: any) {
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() body: UpdateDTO) {
     return this.service.update(id, body);
   }
 

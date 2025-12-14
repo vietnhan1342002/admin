@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity as TypeOrmBase,
+  DeleteDateColumn,
 } from 'typeorm';
 
 export abstract class BaseEntity extends TypeOrmBase {
@@ -14,4 +15,7 @@ export abstract class BaseEntity extends TypeOrmBase {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @DeleteDateColumn({ nullable: true })
+  deletedAt?: Date;
 }

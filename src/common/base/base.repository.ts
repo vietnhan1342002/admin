@@ -53,21 +53,34 @@ export class BaseRepository<T extends ObjectLiteral>
     };
   }
 
-  findById(id: string): Promise<T | null> {
+  async findById(id: string): Promise<T | null> {
     return this.repo.findOne({ where: { id } as any });
   }
 
-  create(data: DeepPartial<T>): Promise<T> {
+  async create(data: DeepPartial<T>): Promise<T> {
     const entity = this.repo.create(data);
     return this.repo.save(entity);
   }
 
-  update(id: string, data: DeepPartial<T>): Promise<T> {
-    return this.repo.save({ id, ...data } as any);
+  async update(id: string, data: DeepPartial<T>): Promise<T | null> {
+    const entity = await this.findById(id);
+    if (!entity) return null;
+
+    Object.assign(entity, data);
+    return this.repo.save(entity);
   }
 
   async delete(id: string): Promise<boolean> {
     const result = await this.repo.delete(id);
     return result.affected ? true : false;
+  }
+
+  async softDelete(id: string): Promise<void> {
+    await this.findById(id);
+    await this.repo.softDelete(id);
+  }
+
+  async restore(id: string): Promise<void> {
+    await this.repo.restore(id);
   }
 }
