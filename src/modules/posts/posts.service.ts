@@ -10,18 +10,22 @@ import { PostRepository } from './repositories/post.repository';
 import { AuditableBaseService } from 'src/common/base/base.auditableService';
 import { UserContextService } from 'src/common/base/user.context';
 import { HttpMessages } from 'src/shared/Enum/messages';
+import { PostResponseDto } from './dto/response-post.dto';
+import { PostMapper } from './mapper/post.mapper';
 
 @Injectable()
 export class PostsService extends AuditableBaseService<
   Post,
   CreatePostDto,
-  UpdatePostDto
+  UpdatePostDto,
+  PostResponseDto
 > {
   constructor(
     private readonly postRepo: PostRepository,
     userContext: UserContextService,
+    mapper: PostMapper,
   ) {
-    super(postRepo, userContext);
+    super(postRepo, userContext, mapper);
   }
 
   private async getPostOrFail(id: string): Promise<Post> {
