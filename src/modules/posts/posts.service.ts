@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
@@ -12,6 +8,7 @@ import { UserContextService } from 'src/common/base/user.context';
 import { HttpMessages } from 'src/shared/Enum/messages';
 import { PostResponseDto } from './dto/response-post.dto';
 import { PostMapper } from './mapper/post.mapper';
+import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
 
 @Injectable()
 export class PostsService extends AuditableBaseService<
@@ -21,26 +18,18 @@ export class PostsService extends AuditableBaseService<
   PostResponseDto
 > {
   constructor(
-    private readonly postRepo: PostRepository,
+    private readonly repo: PostRepository,
     userContext: UserContextService,
     mapper: PostMapper,
   ) {
-    super(postRepo, userContext, mapper);
-  }
-
-  private async getPostOrFail(id: string): Promise<Post> {
-    const post = await this.postRepo.findById(id);
-    if (!post) {
-      throw new NotFoundException(HttpMessages.POST_NOT_FOUND);
-    }
-    return post;
+    super(repo, userContext, mapper);
   }
 
   /**
    * Hook trước khi tạo post
    */
   protected async beforeCreate(data: CreatePostDto): Promise<void> {
-    const existed = await this.postRepo.findBySlug(data.slug);
+    const existed = await this.repo.findBySlug(data.slug);
     if (existed) {
       throw new ConflictException(HttpMessages.POST_ALREADY_EXISTS);
     }
@@ -50,11 +39,15 @@ export class PostsService extends AuditableBaseService<
    * Hook trước khi update post
    */
   protected async beforeUpdate(id: string, data: UpdatePostDto): Promise<void> {
-    const post = await this.getPostOrFail(id);
+    const post = await getEntityOrFail(
+      this.repo,
+      id,
+      HttpMessages.POST_NOT_FOUND,
+    );
 
     // Nếu update slug → phải check unique
     if (data.slug && data.slug !== post.slug) {
-      const existed = await this.postRepo.findBySlug(data.slug);
+      const existed = await this.repo.findBySlug(data.slug);
       if (existed) {
         throw new ConflictException(HttpMessages.POST_ALREADY_EXISTS);
       }
@@ -65,7 +58,7 @@ export class PostsService extends AuditableBaseService<
    * Hook trước khi delete (soft delete)
    */
   protected async beforeDelete(id: string): Promise<void> {
-    await this.getPostOrFail(id);
+    await getEntityOrFail(this.repo, id, HttpMessages.POST_NOT_FOUND);
 
     // Có thể check business rule ở đây
     // Ví dụ: không cho xóa post đã publish
