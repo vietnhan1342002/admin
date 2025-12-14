@@ -8,6 +8,8 @@ export interface IBaseRepository<T> {
   findAll(params?: PaginationParams): Promise<PaginatedResult<T>>;
   findById(id: string): Promise<T | null>;
   create(data: DeepPartial<T>): Promise<T>;
-  update(id: string, data: DeepPartial<T>): Promise<T>;
+  update(id: string, data: DeepPartial<T>): Promise<T | null>;
   delete(id: string): Promise<boolean>;
+  softDelete(id: string): Promise<void>;
+  restore(id: string): Promise<void>;
 }
