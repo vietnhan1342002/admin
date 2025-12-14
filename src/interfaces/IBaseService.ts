@@ -2,12 +2,18 @@ import {
   PaginationParams,
   PaginatedResult,
 } from 'src/common/base/base.repository';
-import { DeepPartial } from 'typeorm';
 
-export interface IBaseService<T> {
-  findAll(params?: PaginationParams): Promise<PaginatedResult<T>>;
-  findById(id: string): Promise<T>;
-  create(data: DeepPartial<T>): Promise<T>;
-  update(id: string, data: DeepPartial<T>): Promise<T>;
-  delete(id: string): Promise<boolean>;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export interface IBaseService<Entity, CreateDTO, UpdateDTO, ResponseDTO> {
+  findAll(params?: PaginationParams): Promise<PaginatedResult<ResponseDTO>>;
+
+  findById(id: string): Promise<ResponseDTO>;
+
+  create(data: CreateDTO): Promise<ResponseDTO>;
+
+  update(id: string, data: UpdateDTO): Promise<ResponseDTO | null>;
+
+  delete(id: string): Promise<void>;
+
+  restore?(id: string): Promise<void>;
 }
