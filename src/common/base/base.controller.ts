@@ -1,7 +1,7 @@
 import { Get, Post, Delete, Body, Param, Query, Patch } from '@nestjs/common';
-import { BaseService } from './base.service';
 import { DeepPartial, ObjectLiteral } from 'typeorm';
 import { PaginationParams } from './base.repository';
+import { IBaseService } from 'src/interfaces/IBaseService';
 
 export class BaseController<
   T extends ObjectLiteral,
@@ -10,8 +10,8 @@ export class BaseController<
   ResponseDTO,
 > {
   constructor(
-    protected readonly service: BaseService<
-      T,
+    protected readonly service: IBaseService<
+      unknown,
       CreateDTO,
       UpdateDTO,
       ResponseDTO
