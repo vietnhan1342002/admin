@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
 
 interface Payload {
+  id: string;
   email: string;
   name: string;
   roles: string;

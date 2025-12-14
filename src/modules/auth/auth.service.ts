@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { comparePassword } from 'src/shared/utils/hashPassword';
 import { UserRole } from '../users/enum/user-role.enum';
 interface PayLoad {
+  id: string;
   email: string;
   roles: UserRole[];
   name: string;
@@ -30,6 +31,7 @@ export class AuthService {
     }
 
     const tokens = await this.generateUserTokens({
+      id: user.id,
       email: user.email,
       roles: [...user.roles],
       name: user.name,
@@ -53,9 +55,9 @@ export class AuthService {
   }
 
   async generateUserTokens(payLoad: PayLoad) {
-    const { email, roles, name } = payLoad;
+    const { id, email, roles, name } = payLoad;
     const accessToken = await this.jwtService.signAsync(
-      { email, roles, name }, // ✔ GIỜ ĐÃ ĐÚNG
+      { id, email, roles, name }, // ✔ GIỜ ĐÃ ĐÚNG
       { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
     const refreshToken = uuidv4();
