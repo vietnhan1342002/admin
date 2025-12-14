@@ -7,9 +7,15 @@ export class BaseController<
   T extends ObjectLiteral,
   CreateDTO extends DeepPartial<T>,
   UpdateDTO extends DeepPartial<T>,
+  ResponseDTO,
 > {
   constructor(
-    protected readonly service: BaseService<T, CreateDTO, UpdateDTO>,
+    protected readonly service: BaseService<
+      T,
+      CreateDTO,
+      UpdateDTO,
+      ResponseDTO
+    >,
   ) {}
 
   @Get()
