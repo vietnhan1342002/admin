@@ -38,11 +38,11 @@ import { RolesGuard } from './common/guard/roles.guard';
     AppService,
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard, // chạy trước -> gán req.user
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_GUARD,
-      useClass: RolesGuard, // chạy sau -> check role
+      useClass: RolesGuard,
     },
   ],
 })

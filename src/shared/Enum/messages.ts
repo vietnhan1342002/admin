@@ -17,6 +17,13 @@ export enum HttpMessages {
   USER_UPDATED = 'User updated successfully',
   USER_DELETED = 'User deleted successfully',
 
+  // ✅ Post
+  POST_NOT_FOUND = 'Post not found',
+  POST_CREATED = 'Post created successfully',
+  POST_UPDATED = 'Post updated successfully',
+  POST_DELETED = 'Post deleted successfully',
+  POST_ALREADY_EXISTS = 'Post already exists',
+
   // ✅ Validation
   VALIDATION_FAILED = 'Validation failed',
   INVALID_INPUT = 'Invalid input data',
