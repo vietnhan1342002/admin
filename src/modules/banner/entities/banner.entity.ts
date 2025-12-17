@@ -1,9 +1,9 @@
-import { Entity, Column, Index, Unique } from 'typeorm';
+import { Entity, Column, Index } from 'typeorm';
 import { BannerPosition } from '../enum/bannerPosition.enum';
 import { BannerStatus } from '../enum/bannerStatus.enum';
 import { BaseEntity } from 'src/common/base/base.entity';
 @Entity()
-@Unique(['imageUrl'])
+@Index(['imageUrl', 'deletedAt'], { unique: true })
 @Index(['title', 'deletedAt'], { unique: true })
 @Index(['position', 'status', 'deletedAt'])
 export class Banner extends BaseEntity {

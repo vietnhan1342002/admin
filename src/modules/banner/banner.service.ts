@@ -33,6 +33,7 @@ export class BannerService extends BaseService<
       imageUrl: data.imageUrl,
       deletedAt: IsNull(),
     });
+
     if (existed) {
       throw new ConflictException(
         buildCrudMessage(Resource.BANNER, CrudAction.ALREADY_EXISTS),

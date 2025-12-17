@@ -9,9 +9,10 @@ import { IResponseAPI } from '../response-api';
 import { ResponseAPI } from 'src/shared/Helper/ResposeApi.helper';
 
 @Injectable()
-export class ResponseInterceptor<T>
-  implements NestInterceptor<T, ResponseAPI<T>>
-{
+export class ResponseInterceptor<T> implements NestInterceptor<
+  T,
+  ResponseAPI<T>
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
