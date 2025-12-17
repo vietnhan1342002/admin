@@ -1,8 +1,9 @@
 import { Type } from 'class-transformer';
 import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 import { PostCategory, PostStatus } from '../enum/post.enum';
+import { BaseFilterDto } from 'src/shared/utils/filter.dto.util';
 
-export class QueryPostDto {
+export class PostFilterDto extends BaseFilterDto {
   @IsEnum(PostStatus)
   @IsOptional()
   status?: PostStatus;

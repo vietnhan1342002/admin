@@ -13,6 +13,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './common/guard/jwt-auth.guard';
 import { RolesGuard } from './common/guard/roles.guard';
 import { BannerModule } from './modules/banner/banner.module';
+import { DoctorsModule } from './modules/doctors/doctors.module';
 // import { typeormConfig } from './config/database.config';
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { BannerModule } from './modules/banner/banner.module';
     TypeOrmConfigModule,
     RedisModule,
     BannerModule,
+    DoctorsModule,
   ],
   controllers: [AppController],
   providers: [
