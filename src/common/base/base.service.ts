@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NotFoundException } from '@nestjs/common';
 import { DeepPartial, ObjectLiteral } from 'typeorm';
-import { BaseRepository, PaginationParams } from './base.repository';
+import {
+  BaseRepository,
+  PaginatedResult,
+  PaginationParams,
+} from './base.repository';
 import { IBaseMapper } from 'src/interfaces/IMapper';
 
 export abstract class BaseService<
@@ -20,7 +24,9 @@ export abstract class BaseService<
   protected async beforeUpdate(_id: string, _data: UpdateDTO): Promise<void> {}
   protected async beforeDelete(_id: string): Promise<void> {}
 
-  async findAll(pagination?: PaginationParams) {
+  async findAll(
+    pagination?: PaginationParams,
+  ): Promise<PaginatedResult<ResponseDTO>> {
     const result = await this.repository.findAll(pagination);
 
     return {
@@ -54,6 +60,7 @@ export abstract class BaseService<
   }
 
   async restore(id: string): Promise<void> {
-    await this.repository.restore(id);
+    const entity = await this.repository.findById(id);
+    if (!entity) throw new NotFoundException();
   }
 }

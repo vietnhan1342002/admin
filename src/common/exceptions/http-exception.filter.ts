@@ -20,6 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const res = exception.getResponse();
 
     response.status(status).json({
+      success: false,
       ...(typeof res === 'object' ? res : { message: res }),
       path: request.url,
     });

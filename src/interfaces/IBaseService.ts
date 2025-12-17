@@ -4,7 +4,7 @@ import {
 } from 'src/common/base/base.repository';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface IBaseService<Entity, CreateDTO, UpdateDTO, ResponseDTO> {
+export interface IBaseService<CreateDTO, UpdateDTO, ResponseDTO> {
   findAll(params?: PaginationParams): Promise<PaginatedResult<ResponseDTO>>;
 
   findById(id: string): Promise<ResponseDTO>;

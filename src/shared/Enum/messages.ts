@@ -16,6 +16,7 @@ export enum HttpMessages {
   USER_CREATED = 'User created successfully',
   USER_UPDATED = 'User updated successfully',
   USER_DELETED = 'User deleted successfully',
+  USER_ALREADY_EXISTS = 'User already exists',
 
   // ✅ Post
   POST_NOT_FOUND = 'Post not found',
@@ -36,4 +37,21 @@ export enum HttpMessages {
   // ✅ Common CRUD
   RECORD_NOT_FOUND = 'Record not found',
   RECORD_ALREADY_EXISTS = 'Record already exists',
+}
+
+export enum CrudAction {
+  CREATED = 'created successfully',
+  UPDATED = 'updated successfully',
+  DELETED = 'deleted successfully',
+  NOT_FOUND = 'not found',
+  ALREADY_EXISTS = 'already exists',
+}
+
+export enum Resource {
+  USER = 'User',
+  POST = 'Post',
+  BANNER = 'Banner',
+  DOCTOR = 'Doctor',
+  COMMENT = 'Comment',
+  EMAIL = 'email',
 }

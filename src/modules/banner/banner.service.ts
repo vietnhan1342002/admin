@@ -7,8 +7,9 @@ import { BaseService } from 'src/common/base/base.service';
 import { BannerRepository } from './repositories/banner.repository';
 import { BannerMapper } from './mapper/banner.mapper';
 import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
-import { HttpMessages } from 'src/shared/Enum/messages';
+import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { IsNull } from 'typeorm';
+import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 
 @Injectable()
 export class BannerService extends BaseService<
@@ -33,7 +34,9 @@ export class BannerService extends BaseService<
       deletedAt: IsNull(),
     });
     if (existed) {
-      throw new ConflictException(HttpMessages.RECORD_ALREADY_EXISTS);
+      throw new ConflictException(
+        buildCrudMessage(Resource.BANNER, CrudAction.ALREADY_EXISTS),
+      );
     }
   }
 
@@ -47,7 +50,7 @@ export class BannerService extends BaseService<
     const banner = await getEntityOrFail(
       this.repo,
       id,
-      HttpMessages.RECORD_NOT_FOUND,
+      buildCrudMessage(Resource.BANNER, CrudAction.NOT_FOUND),
     );
 
     // Nếu update imageUrl → phải check unique
@@ -57,7 +60,9 @@ export class BannerService extends BaseService<
         deletedAt: IsNull(),
       });
       if (existed) {
-        throw new ConflictException(HttpMessages.RECORD_ALREADY_EXISTS);
+        throw new ConflictException(
+          buildCrudMessage(Resource.BANNER, CrudAction.ALREADY_EXISTS),
+        );
       }
     }
   }
@@ -66,7 +71,11 @@ export class BannerService extends BaseService<
    * Hook trước khi delete (soft delete)
    */
   protected async beforeDelete(id: string): Promise<void> {
-    await getEntityOrFail(this.repo, id, HttpMessages.RECORD_NOT_FOUND);
+    await getEntityOrFail(
+      this.repo,
+      id,
+      buildCrudMessage(Resource.BANNER, CrudAction.NOT_FOUND),
+    );
 
     // Có thể check business rule ở đây
   }

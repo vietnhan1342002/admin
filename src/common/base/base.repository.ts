@@ -3,6 +3,7 @@ import { IBaseRepository } from 'src/interfaces/IBaseRepository';
 import {
   DeepPartial,
   FindOptionsWhere,
+  IsNull,
   ObjectLiteral,
   Repository,
 } from 'typeorm';
@@ -24,9 +25,9 @@ export interface PaginatedResult<T> {
   totalPages: number;
 }
 
-export class BaseRepository<T extends ObjectLiteral>
-  implements IBaseRepository<T>
-{
+export class BaseRepository<
+  T extends ObjectLiteral,
+> implements IBaseRepository<T> {
   constructor(protected readonly repo: Repository<T>) {}
 
   async findAll(params?: PaginationParams): Promise<PaginatedResult<T>> {
@@ -38,7 +39,8 @@ export class BaseRepository<T extends ObjectLiteral>
     const filter: FindOptionsWhere<T> = params?.filter ?? {};
 
     const [data, total] = await this.repo.findAndCount({
-      where: filter,
+      ...filter,
+      deletedAt: IsNull(),
       order: { [sortBy]: order } as any,
       skip: (page - 1) * limit,
       take: limit,
