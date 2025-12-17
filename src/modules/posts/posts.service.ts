@@ -33,7 +33,7 @@ export class PostsService extends AuditableBaseService<
     const existed = await this.repo.findBySlug(data.slug);
     if (existed) {
       throw new ConflictException(
-        buildCrudMessage(Resource.DOCTOR, CrudAction.ALREADY_EXISTS),
+        buildCrudMessage(Resource.POST, CrudAction.ALREADY_EXISTS),
       );
     }
   }
