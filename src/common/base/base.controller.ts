@@ -1,37 +1,22 @@
 import { Get, Post, Delete, Body, Param, Query, Patch } from '@nestjs/common';
-import { DeepPartial, ObjectLiteral } from 'typeorm';
 import { PaginationParams } from './base.repository';
 import { IBaseService } from 'src/interfaces/IBaseService';
+import { BaseFilterDto } from 'src/shared/utils/filter.dto.util';
 
-export class BaseController<
-  T extends ObjectLiteral,
-  CreateDTO extends DeepPartial<T>,
-  UpdateDTO extends DeepPartial<T>,
-  ResponseDTO,
-> {
+export class BaseController<CreateDTO, UpdateDTO, ResponseDTO> {
   constructor(
-    protected readonly service: IBaseService<
-      unknown,
-      CreateDTO,
-      UpdateDTO,
-      ResponseDTO
-    >,
+    protected readonly service: IBaseService<CreateDTO, UpdateDTO, ResponseDTO>,
   ) {}
 
   @Get()
-  async findAll(
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-    @Query('sortBy') sortBy?: string,
-    @Query('order') order?: 'ASC' | 'DESC',
-    @Query() filter?: Record<string, any>, // nhận tất cả query còn lại làm filter
-  ) {
+  async findAll(@Query() filterDto: BaseFilterDto) {
+    const { page, limit, sortBy, order, ...filters } = filterDto;
     const params: PaginationParams = {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
       sortBy,
       order,
-      filter,
+      filter: filters,
     };
     return this.service.findAll(params);
   }

@@ -1,5 +1,10 @@
 // src/modules/users/users.service.ts
-import { Injectable, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpStatus,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -8,9 +13,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UserMapper } from './mapper/user.mapper';
 import { ResponseException } from 'src/common/exceptions/resposeException';
-import { HttpMessages } from 'src/shared/Enum/messages';
+import { CrudAction, HttpMessages, Resource } from 'src/shared/Enum/messages';
 import { hashPassword, comparePassword } from 'src/shared/utils/hashPassword';
 import { UserRole } from './enum/user-role.enum';
+import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 
 @Injectable()
 export class UsersService {
@@ -34,20 +40,16 @@ export class UsersService {
         .where('user.id = :id', { id })
         .getOne();
       if (!user)
-        throw new ResponseException(
-          HttpMessages.RECORD_NOT_FOUND,
-          HttpStatus.NOT_FOUND,
-          'User not found',
+        throw new NotFoundException(
+          buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND),
         );
       return user;
     }
 
     const user = await this.usersRepository.findOne({ where: { id } });
     if (!user)
-      throw new ResponseException(
-        HttpMessages.RECORD_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-        'User not found',
+      throw new NotFoundException(
+        buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND),
       );
     return user;
   }
@@ -55,10 +57,8 @@ export class UsersService {
   // Create user (admin only)
   async create(dto: CreateUserDto) {
     if (await this.emailExists(dto.email)) {
-      throw new ResponseException(
-        HttpMessages.RECORD_ALREADY_EXISTS,
-        HttpStatus.BAD_REQUEST,
-        'Email already exists',
+      throw new ConflictException(
+        buildCrudMessage(Resource.EMAIL, CrudAction.ALREADY_EXISTS),
       );
     }
 
@@ -100,10 +100,8 @@ export class UsersService {
 
     if (dto.email && dto.email !== user.email) {
       if (await this.emailExists(dto.email)) {
-        throw new ResponseException(
-          HttpMessages.RECORD_ALREADY_EXISTS,
-          HttpStatus.BAD_REQUEST,
-          'Email already exists',
+        throw new ConflictException(
+          buildCrudMessage(Resource.EMAIL, CrudAction.ALREADY_EXISTS),
         );
       }
     }
