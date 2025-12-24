@@ -16,7 +16,10 @@ export class User {
   id: string;
 
   @Column()
-  name: string;
+  firstName: string;
+
+  @Column()
+  lastName: string;
 
   @Column({ unique: true })
   email: string;
@@ -24,8 +27,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'simple-array' })
-  roles: UserRole[];
+  @Column({})
+  role: UserRole;
 
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];

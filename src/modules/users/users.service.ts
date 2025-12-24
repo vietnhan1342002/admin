@@ -5,8 +5,6 @@ import {
   NotFoundException,
   ConflictException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,30 +13,35 @@ import { UserMapper } from './mapper/user.mapper';
 import { ResponseException } from 'src/common/exceptions/resposeException';
 import { CrudAction, HttpMessages, Resource } from 'src/shared/Enum/messages';
 import { hashPassword, comparePassword } from 'src/shared/utils/hashPassword';
-import { UserRole } from './enum/user-role.enum';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
+import { BaseService } from 'src/common/base/base.service';
+import { UserResponseDto } from './dto/response-user.dto';
+import { UserRepository } from './repositories/users.repository';
+import { Request } from 'express';
 
 @Injectable()
-export class UsersService {
+export class UsersService extends BaseService<
+  User,
+  CreateUserDto,
+  UpdateUserDto,
+  UserResponseDto
+> {
   constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-    private dataSource: DataSource, // optional for transactions
-  ) {}
+    private repo: UserRepository,
+    mapper: UserMapper,
+  ) {
+    super(repo, mapper);
+  }
 
   private async emailExists(email: string): Promise<boolean> {
-    const user = await this.usersRepository.findOne({ where: { email } });
+    const user = await this.repo.findOne({ email });
     return !!user;
   }
 
   private async findOrFail(id: string, withPassword = false): Promise<User> {
     if (withPassword) {
       // need to explicitly select password
-      const user = await this.usersRepository
-        .createQueryBuilder('user')
-        .addSelect('user.password')
-        .where('user.id = :id', { id })
-        .getOne();
+      const user = await this.repo.findByIdWithPassword(id);
       if (!user)
         throw new NotFoundException(
           buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND),
@@ -46,7 +49,7 @@ export class UsersService {
       return user;
     }
 
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.repo.findOne({ id });
     if (!user)
       throw new NotFoundException(
         buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND),
@@ -64,56 +67,15 @@ export class UsersService {
 
     const hashed = await hashPassword(dto.password);
 
-    const roles =
-      Array.isArray(dto.roles) && dto.roles.length
-        ? dto.roles
-        : [UserRole.USER];
-
-    const newUser = this.usersRepository.create({
-      name: dto.name,
+    const newUser = await this.repo.create({
+      firstName: dto.firstName,
+      lastName: dto.lastName,
       email: dto.email,
       password: hashed,
-      roles,
+      role: dto.role,
     });
 
-    await this.usersRepository.save(newUser);
-
-    return UserMapper.toResponse(newUser);
-  }
-
-  // List users (admin)
-  async findAll() {
-    const users = await this.usersRepository.find();
-    return UserMapper.toListResponse(users);
-  }
-
-  // Get single user
-  async findOne(id: string) {
-    const user = await this.findOrFail(id);
-    return UserMapper.toResponse(user);
-  }
-
-  // Update user
-  // NOTE: role changes should be allowed only for admin — enforced at Guard/Controller level
-  async update(id: string, dto: UpdateUserDto) {
-    const user = await this.findOrFail(id);
-
-    if (dto.email && dto.email !== user.email) {
-      if (await this.emailExists(dto.email)) {
-        throw new ConflictException(
-          buildCrudMessage(Resource.EMAIL, CrudAction.ALREADY_EXISTS),
-        );
-      }
-    }
-
-    // Merge allowed fields only
-    if (dto.name !== undefined) user.name = dto.name;
-    if (dto.email !== undefined) user.email = dto.email;
-    if (dto.roles !== undefined)
-      user.roles = Array.isArray(dto.roles) ? dto.roles : [dto.roles];
-
-    const updated = await this.usersRepository.save(user);
-    return UserMapper.toResponse(updated);
+    return this.mapper.toResponse(newUser);
   }
 
   // Change password (user or admin)
@@ -138,20 +100,7 @@ export class UsersService {
     }
 
     user.password = await hashPassword(dto.newPassword);
-    await this.usersRepository.save(user);
+    await this.repo.update(user.id, { password: user.password });
     return { message: 'Password updated successfully' };
-  }
-
-  // Soft delete
-  async remove(id: string) {
-    const user = await this.findOrFail(id);
-    await this.usersRepository.softRemove(user);
-    return { message: 'User deleted successfully' };
-  }
-
-  // Restore
-  async restore(id: string) {
-    await this.usersRepository.restore(id);
-    return { message: 'User restored' };
   }
 }

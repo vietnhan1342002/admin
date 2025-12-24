@@ -6,8 +6,7 @@ import { Request } from 'express';
 interface Payload {
   id: string;
   email: string;
-  name: string;
-  roles: string;
+  role: string;
 }
 
 @Injectable()

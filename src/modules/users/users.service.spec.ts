@@ -33,7 +33,7 @@ describe('UserService', () => {
       email: 'nhan@gmail.com',
       password: 'hashedPassword',
       posts: [],
-      roles: UserRole.ADMIN,
+      role: UserRole.ADMIN,
     });
 
     const result = await service.findOne('1');
