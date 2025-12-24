@@ -7,11 +7,13 @@ import { Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { comparePassword } from 'src/shared/utils/hashPassword';
 import { UserRole } from '../users/enum/user-role.enum';
+import { Request } from 'express';
 interface PayLoad {
   id: string;
   email: string;
-  roles: UserRole[];
-  name: string;
+  role: UserRole;
+  firstName: string;
+  lastName: string;
 }
 
 @Injectable()
@@ -33,8 +35,9 @@ export class AuthService {
     const tokens = await this.generateUserTokens({
       id: user.id,
       email: user.email,
-      roles: [...user.roles],
-      name: user.name,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
     });
 
     return {
@@ -54,10 +57,20 @@ export class AuthService {
     return null;
   }
 
+  profile(req: Request) {
+    const user = req.user;
+
+    if (!user) {
+      throw new UnauthorizedException('Người dùng chưa đăng nhập');
+    }
+
+    return user;
+  }
+
   async generateUserTokens(payLoad: PayLoad) {
-    const { id, email, roles, name } = payLoad;
+    const { id, email, role } = payLoad;
     const accessToken = await this.jwtService.signAsync(
-      { id, email, roles, name }, // ✔ GIỜ ĐÃ ĐÚNG
+      { id, email, role }, // ✔ GIỜ ĐÃ ĐÚNG
       { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
     const refreshToken = uuidv4();
