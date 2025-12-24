@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import express from 'express';
+import express, { Response } from 'express';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
@@ -24,9 +24,9 @@ import { ResponseException } from 'src/common/exceptions/resposeException';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('protected')
-  getProtected(@Request() req: express.Request) {
-    return { message: 'Access granted', user: req.user };
+  @Get('profile')
+  getProfile(@Request() req: express.Request) {
+    return this.authService.profile(req);
   }
 
   @Public()
@@ -48,13 +48,30 @@ export class AuthController {
     response.cookie('jwt', user.accessToken, {
       httpOnly: true,
       path: '/',
-      secure: true,
       sameSite: 'none',
+      secure: false,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
     return ResponseAPI.success(
       user.accessToken,
       HttpMessages.LOGIN_SUCCESS,
+      HttpStatus.ACCEPTED,
+    );
+  }
+
+  @Public()
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: express.Response) {
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      path: '/',
+      sameSite: 'none',
+      secure: false,
+    });
+
+    return ResponseAPI.success(
+      true,
+      HttpMessages.LOGOUT_SUCCESS,
       HttpStatus.ACCEPTED,
     );
   }
