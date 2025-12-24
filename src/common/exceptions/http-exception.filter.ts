@@ -10,43 +10,68 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  private readonly logger = new Logger(HttpException.name);
+  private readonly logger = new Logger(AllExceptionsFilter.name);
+
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
+
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message: any = 'Internal server error';
+    let message = 'Lỗi hệ thống';
+    let errors: string[] | undefined;
+
+    // ✅ HttpException (ValidationPipe, BadRequest, Forbidden...)
     if (exception instanceof HttpException) {
       status = exception.getStatus();
-      message = exception.getResponse();
-    } else if (exception.name === 'QueryFailedError') {
-      // Bắt riêng lỗi DB
-      status = HttpStatus.CONFLICT; // 409
-      message = { message: 'Database error', detail: exception.message };
-    } else if (exception instanceof Error) {
-      message = { message: exception.message };
+      const res = exception.getResponse() as any;
+
+      message = res.message ?? exception.message;
+      errors = res.errors;
     }
 
-    if (
-      !(exception instanceof HttpException) ||
-      status === HttpStatus.INTERNAL_SERVER_ERROR
+    // ✅ DB error: thiếu field NOT NULL
+    else if (
+      exception.name === 'QueryFailedError' &&
+      exception.message?.includes("doesn't have a default value")
     ) {
+      status = HttpStatus.BAD_REQUEST;
+      message = 'Thiếu trường dữ liệu bắt buộc';
+
+      const match = exception.message.match(/Field '(.+?)'/);
+      if (match) {
+        errors = [`Trường ${match[1]} là bắt buộc`];
+      }
+    }
+
+    // ✅ DB error khác
+    else if (exception.name === 'QueryFailedError') {
+      status = HttpStatus.CONFLICT;
+      message = 'Lỗi dữ liệu trong cơ sở dữ liệu';
+    }
+
+    // ✅ Error thường
+    else if (exception instanceof Error) {
+      message = exception.message;
+    }
+
+    // ✅ Log lỗi hệ thống
+    if (status === HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(
-        `HTTP ${status} Error on ${request.method} ${request.url}`,
-        exception.stack || exception,
+        `HTTP ${status} ${request.method} ${request.url}`,
+        exception.stack,
       );
     }
 
     response.status(status).json({
       success: false,
-      // ...(typeof res === 'object' ? res : { message: res }),
-      ...message,
-      // timestamp: new Date().toISOString(),
+      statusCode: status,
+      message,
+      errors,
       path: request.url,
+      timestamp: new Date().toISOString(),
     });
   }
 }

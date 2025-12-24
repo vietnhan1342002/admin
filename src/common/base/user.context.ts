@@ -21,8 +21,6 @@ export class UserContextService {
 
   get userId(): string | null {
     console.log(this.request.user);
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.request.user?.id ?? null;
   }
 }

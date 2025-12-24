@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from 'src/common/decorators/role.decorator';
 import { UserRole } from 'src/modules/users/enum/user-role.enum';
@@ -8,7 +13,7 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
+    const requiredRoles = this.reflector.getAllAndOverride<UserRole>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
@@ -18,7 +23,13 @@ export class RolesGuard implements CanActivate {
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { user } = context.switchToHttp().getRequest();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    return requiredRoles.some((role) => user.roles?.includes(role));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    if (!requiredRoles.includes(user.role as string)) {
+      throw new ForbiddenException(
+        'Bạn không có quyền thực hiện hành động này',
+      );
+    }
+
+    return true;
   }
 }

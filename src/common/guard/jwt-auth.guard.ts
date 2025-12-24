@@ -8,6 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
+import { HttpMessages } from 'src/shared/Enum/messages';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -26,19 +27,26 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
-    const request: Request = context.switchToHttp().getRequest();
+  // handleRequest(err: any, user: any, info: any, context: ExecutionContext) {
+  //   const request: Request = context.switchToHttp().getRequest();
 
-    const token: string = request.cookies?.['jwt'] as string;
+  //   const token: string = request.cookies?.['jwt'] as string;
 
-    if (!token) {
-      throw new UnauthorizedException('JWT not found in cookies');
-    }
+  //   if (!token) {
+  //     throw new UnauthorizedException('JWT not found in cookies');
+  //   }
 
+  //   if (err || !user) {
+  //     throw err || new UnauthorizedException('Invalid or expired JWT');
+  //   }
+
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  //   return user;
+  // }
+  handleRequest(err: any, user: any) {
     if (err || !user) {
-      throw err || new UnauthorizedException('Invalid or expired JWT');
+      throw err || new UnauthorizedException(HttpMessages.UNAUTHORIZED);
     }
-
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return user;
   }
