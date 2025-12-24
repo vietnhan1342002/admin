@@ -1,17 +1,15 @@
+import { BaseMapper } from 'src/common/base/base.mapper';
 import { UserResponseDto } from '../dto/response-user.dto';
 import { User } from '../entities/user.entity';
 
-export class UserMapper {
-  static toResponse(user: User): UserResponseDto {
+export class UserMapper extends BaseMapper<User, UserResponseDto> {
+  toResponse(user: User): UserResponseDto {
     return {
       id: user.id,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
-      roles: user.roles || [],
+      role: user.role,
     };
-  }
-
-  static toListResponse(users: User[]): UserResponseDto[] {
-    return users.map((user) => this.toResponse(user));
   }
 }

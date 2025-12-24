@@ -13,7 +13,8 @@ export class PostResponseDto {
   publishedAt?: Date;
   author?: {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
   };
 
