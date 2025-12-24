@@ -1,57 +1,58 @@
 // src/common/constants/messages.enum.ts
+
 export enum HttpMessages {
-  // ✅ General
-  SUCCESS = 'Operation completed successfully',
-  FAILED = 'Operation failed',
+  // ✅ Chung
+  SUCCESS = 'Thao tác thành công',
+  FAILED = 'Thao tác thất bại',
 
-  // ✅ Auth
-  LOGIN_SUCCESS = 'Login successful',
-  LOGIN_FAILED = 'Invalid username or password',
-  LOGOUT_SUCCESS = 'Logout successful',
-  UNAUTHORIZED = 'Unauthorized access',
-  FORBIDDEN = 'You do not have permission',
+  // ✅ Xác thực
+  LOGIN_SUCCESS = 'Đăng nhập thành công',
+  LOGIN_FAILED = 'Sai tên đăng nhập hoặc mật khẩu',
+  LOGOUT_SUCCESS = 'Đăng xuất thành công',
+  UNAUTHORIZED = 'Người dùng chưa đăng nhập',
+  FORBIDDEN = 'Bạn không có quyền truy cập',
 
-  // ✅ User
-  USER_NOT_FOUND = 'User not found',
-  USER_CREATED = 'User created successfully',
-  USER_UPDATED = 'User updated successfully',
-  USER_DELETED = 'User deleted successfully',
-  USER_ALREADY_EXISTS = 'User already exists',
+  // ✅ Người dùng
+  USER_NOT_FOUND = 'Không tìm thấy người dùng',
+  USER_CREATED = 'Tạo người dùng thành công',
+  USER_UPDATED = 'Cập nhật người dùng thành công',
+  USER_DELETED = 'Xóa người dùng thành công',
+  USER_ALREADY_EXISTS = 'Người dùng đã tồn tại',
 
-  // ✅ Post
-  POST_NOT_FOUND = 'Post not found',
-  POST_CREATED = 'Post created successfully',
-  POST_UPDATED = 'Post updated successfully',
-  POST_DELETED = 'Post deleted successfully',
-  POST_ALREADY_EXISTS = 'Post already exists',
+  // ✅ Bài viết
+  POST_NOT_FOUND = 'Không tìm thấy bài viết',
+  POST_CREATED = 'Tạo bài viết thành công',
+  POST_UPDATED = 'Cập nhật bài viết thành công',
+  POST_DELETED = 'Xóa bài viết thành công',
+  POST_ALREADY_EXISTS = 'Bài viết đã tồn tại',
 
-  // ✅ Validation
-  VALIDATION_FAILED = 'Validation failed',
-  INVALID_INPUT = 'Invalid input data',
+  // ✅ Kiểm tra dữ liệu
+  VALIDATION_FAILED = 'Dữ liệu không hợp lệ',
+  INVALID_INPUT = 'Dữ liệu đầu vào không hợp lệ',
 
   // ✅ JWT / Token
-  TOKEN_EXPIRED = 'Token has expired',
-  TOKEN_INVALID = 'Invalid token',
-  TOKEN_NOT_FOUND = 'Token not found',
+  TOKEN_EXPIRED = 'Token đã hết hạn',
+  TOKEN_INVALID = 'Token không hợp lệ',
+  TOKEN_NOT_FOUND = 'Không tìm thấy token',
 
-  // ✅ Common CRUD
-  RECORD_NOT_FOUND = 'Record not found',
-  RECORD_ALREADY_EXISTS = 'Record already exists',
+  // ✅ CRUD chung
+  RECORD_NOT_FOUND = 'Không tìm thấy bản ghi',
+  RECORD_ALREADY_EXISTS = 'Bản ghi đã tồn tại',
 }
 
 export enum CrudAction {
-  CREATED = 'created successfully',
-  UPDATED = 'updated successfully',
-  DELETED = 'deleted successfully',
-  NOT_FOUND = 'not found',
-  ALREADY_EXISTS = 'already exists',
+  CREATED = 'đã được tạo thành công',
+  UPDATED = 'đã được cập nhật thành công',
+  DELETED = 'đã được xóa thành công',
+  NOT_FOUND = 'không tồn tại',
+  ALREADY_EXISTS = 'đã tồn tại',
 }
 
 export enum Resource {
-  USER = 'User',
-  POST = 'Post',
+  USER = 'Người dùng',
+  POST = 'Bài viết',
   BANNER = 'Banner',
-  DOCTOR = 'Doctor',
-  COMMENT = 'Comment',
+  DOCTOR = 'Bác sĩ',
+  COMMENT = 'Bình luận',
   EMAIL = 'email',
 }
