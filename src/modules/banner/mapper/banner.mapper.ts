@@ -11,7 +11,7 @@ export class BannerMapper extends BaseMapper<Banner, BannerReponseDto> {
     dto.id = entity.id;
     dto.title = entity.title;
     dto.imageUrl = entity.imageUrl;
-    dto.link = entity.link;
+    dto.redirectUrl = entity.redirectUrl;
     dto.position = entity.position;
     dto.status = entity.status;
     dto.startAt = entity.startAt;

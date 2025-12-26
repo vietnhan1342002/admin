@@ -17,7 +17,7 @@ export class CreateBannerDto {
 
   @IsOptional()
   @IsString()
-  link?: string;
+  redirectUrl?: string;
 
   @IsOptional()
   @IsEnum(BannerPosition)

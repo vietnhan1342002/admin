@@ -9,4 +9,11 @@ export class BannerRepository extends BaseRepository<Banner> {
   constructor(@InjectRepository(Banner) repo: Repository<Banner>) {
     super(repo);
   }
+  async findActive() {
+    return this.repo
+      .createQueryBuilder('banner')
+      .where('banner.status = active')
+      .orderBy('ASC')
+      .getMany();
+  }
 }
