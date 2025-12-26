@@ -2,6 +2,7 @@
 import { IBaseRepository } from 'src/interfaces/IBaseRepository';
 import {
   DeepPartial,
+  EntityManager,
   FindOptionsWhere,
   IsNull,
   ObjectLiteral,
@@ -28,7 +29,10 @@ export interface PaginatedResult<T> {
 export class BaseRepository<
   T extends ObjectLiteral,
 > implements IBaseRepository<T> {
-  constructor(protected readonly repo: Repository<T>) {}
+  constructor(
+    protected readonly repo: Repository<T>,
+    protected readonly manager?: EntityManager,
+  ) {}
 
   async findAll(params?: PaginationParams): Promise<PaginatedResult<T>> {
     const page = params?.page ?? 1;
@@ -88,5 +92,15 @@ export class BaseRepository<
 
   async restore(id: string): Promise<void> {
     await this.repo.restore(id);
+  }
+
+  async withTransaction<R>(
+    fn: (manager: EntityManager) => Promise<R>,
+  ): Promise<R> {
+    if (!this.manager) {
+      throw new Error('EntityManager is not provided');
+    }
+
+    return this.manager.transaction(fn);
   }
 }
