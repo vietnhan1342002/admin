@@ -5,7 +5,7 @@ export class BannerReponseDto {
   id: string;
   title: string;
   imageUrl: string;
-  link?: string;
+  redirectUrl?: string;
   position: BannerPosition;
   status: BannerStatus;
   startAt?: Date;

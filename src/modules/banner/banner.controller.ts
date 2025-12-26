@@ -28,4 +28,10 @@ export class BannerController extends BaseController<
   override findById(@Param('id') id: string) {
     return super.findById(id);
   }
+
+  @Public()
+  @Get('active')
+  findActive() {
+    return this.bannerService.findActive();
+  }
 }

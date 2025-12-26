@@ -80,4 +80,8 @@ export class BannerService extends BaseService<
 
     // Có thể check business rule ở đây
   }
+
+  findActive() {
+    return this.repo.findActive();
+  }
 }
