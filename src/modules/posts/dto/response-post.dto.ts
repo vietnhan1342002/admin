@@ -1,3 +1,4 @@
+import { User } from 'src/modules/users/entities/user.entity';
 import { PostCategory, PostStatus } from '../enum/post.enum';
 
 export class PostResponseDto {
@@ -11,12 +12,7 @@ export class PostResponseDto {
   category?: PostCategory;
   views: number;
   publishedAt?: Date;
-  author?: {
-    id: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-  };
+  author?: User;
 
   createdAt: Date;
   updatedAt: Date;

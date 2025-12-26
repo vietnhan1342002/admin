@@ -68,8 +68,6 @@ export class UsersService extends BaseService<
     const hashed = await hashPassword(dto.password);
 
     const newUser = await this.repo.create({
-      firstName: dto.firstName,
-      lastName: dto.lastName,
       email: dto.email,
       password: hashed,
       role: dto.role,

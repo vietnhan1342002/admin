@@ -1,44 +1,22 @@
-import { Post } from 'src/modules/posts/entities/post.entity';
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-} from 'typeorm';
+import { Entity, Column } from 'typeorm';
 import { UserRole } from '../enum/user-role.enum';
+import { BaseEntity } from 'src/common/base/base.entity';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
+export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
   @Column()
   password: string;
 
-  @Column({})
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.STAFF,
+  })
   role: UserRole;
 
-  @OneToMany(() => Post, (post) => post.author)
-  posts: Post[];
-
-  @CreateDateColumn({ type: 'timestamp' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deletedAt: Date;
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean;
 }
