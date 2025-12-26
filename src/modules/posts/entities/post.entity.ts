@@ -25,7 +25,7 @@ export class Post extends BaseEntity {
   authorId: string;
 
   @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'authorId' })
+  @JoinColumn({ name: 'author_id' })
   author?: User;
 
   @Column({ type: 'enum', enum: PostStatus, default: PostStatus.DRAFT })

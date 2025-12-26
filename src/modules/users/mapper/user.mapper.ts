@@ -6,10 +6,11 @@ export class UserMapper extends BaseMapper<User, UserResponseDto> {
   toResponse(user: User): UserResponseDto {
     return {
       id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
       email: user.email,
       role: user.role,
+      isActive: user.isActive,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
   }
 }
