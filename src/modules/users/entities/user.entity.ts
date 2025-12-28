@@ -13,7 +13,6 @@ export class User extends BaseEntity {
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.STAFF,
   })
   role: UserRole;
 
