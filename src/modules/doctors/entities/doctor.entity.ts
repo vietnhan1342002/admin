@@ -5,8 +5,8 @@ import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
 @Entity('doctors')
 @Index('IDX_DOCTOR_FULLNAME', ['fullName'])
 @Index('IDX_DOCTOR_STATUS_SPECIALTY', ['status', 'specialty'])
-@Index(['contactEmail', 'deletedAt'], { unique: true })
-@Index(['contactPhone', 'deletedAt'], { unique: true })
+@Index(['contactEmail', 'deleted_at'], { unique: true })
+@Index(['contactPhone', 'deleted_at'], { unique: true })
 export class Doctor extends BaseEntity {
   @Column({ length: 200 })
   fullName: string;
