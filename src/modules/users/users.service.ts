@@ -135,4 +135,12 @@ export class UsersService extends BaseService<
       await manager.softDelete(Doctor, { userId: id });
     });
   }
+
+  async active(id: string) {
+    await this.repo.update(id, { isActive: true });
+  }
+
+  async deactive(id: string) {
+    await this.repo.update(id, { isActive: false });
+  }
 }
