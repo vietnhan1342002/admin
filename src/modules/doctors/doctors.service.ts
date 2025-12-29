@@ -8,8 +8,13 @@ import { DoctorRepository } from './repositories/doctor.repository';
 import { DoctorMapper } from './mapper/doctor.mapper';
 import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
-import { IsNull, Not } from 'typeorm';
+import { IsNull } from 'typeorm';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
+import { User } from '../users/entities/user.entity';
+import { Staff } from '../staffs/entities/staff.entity';
+import { hashPassword } from 'src/shared/utils/hashPassword';
+import { UserRole } from '../users/enum/user-role.enum';
+import { DoctorStatus } from './enum/doctor.enum';
 
 @Injectable()
 export class DoctorsService extends BaseService<
@@ -25,64 +30,86 @@ export class DoctorsService extends BaseService<
     super(repo, mapper);
   }
 
-  protected async beforeCreate(_data: CreateDoctorDto): Promise<void> {
-    const existedEmail = await this.repo.findOne({
-      contactEmail: _data.contactEmail,
-      deletedAt: IsNull(),
-    });
+  override async create(dto: CreateDoctorDto) {
+    return this.repo.withTransaction(async (manager) => {
+      // 1️⃣ Create User
 
-    const existedPhone = await this.repo.findOne({
-      contactPhone: _data.contactPhone,
-      deletedAt: IsNull(),
-    });
-
-    if (existedEmail || existedPhone) {
-      {
-        throw new ConflictException(
-          buildCrudMessage(Resource.DOCTOR, CrudAction.ALREADY_EXISTS),
-        );
-      }
-    }
-  }
-
-  protected async beforeUpdate(
-    id: string,
-    data: UpdateDoctorDto,
-  ): Promise<void> {
-    const doctor = await getEntityOrFail(
-      this.repo,
-      id,
-      buildCrudMessage(Resource.DOCTOR, CrudAction.NOT_FOUND),
-    );
-
-    if (data.contactEmail && data.contactEmail !== doctor.contactEmail) {
-      const existed = await this.repo.findOne({
-        contactEmail: data.contactEmail,
-        deletedAt: IsNull(),
-        id: Not(id),
+      const existedUser = await manager.findOne(User, {
+        where: { email: dto.user.email, deletedAt: IsNull() },
       });
 
-      if (existed) {
+      if (existedUser) {
         throw new ConflictException(
-          buildCrudMessage(Resource.DOCTOR, CrudAction.ALREADY_EXISTS),
+          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS),
         );
       }
-    }
+      const user = manager.create(User, {
+        email: dto.user.email,
+        password: await hashPassword(dto.user.password),
+        role: UserRole.STAFF,
+        isActive: true,
+      });
+      const savedUser = await manager.save(user);
 
-    if (data.contactPhone && data.contactPhone !== doctor.contactPhone) {
-      const existed = await this.repo.findOne({
-        contactPhone: data.contactPhone,
-        deletedAt: IsNull(),
-        id: Not(id),
+      const existedStaff = await manager.findOne(Staff, {
+        where: { phone: dto.staff.phone, deletedAt: IsNull() },
       });
 
-      if (existed) {
+      if (existedStaff) {
         throw new ConflictException(
-          buildCrudMessage(Resource.DOCTOR, CrudAction.ALREADY_EXISTS),
+          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS),
         );
       }
-    }
+      // 2️⃣ Create Staff
+      const staff = manager.create(Staff, {
+        userId: savedUser.id,
+        firstName: dto.staff.firstName,
+        lastName: dto.staff.lastName,
+        phone: dto.staff.phone,
+        position: dto.staff.position,
+        dateAdded: dto.staff.dateAdded,
+      });
+      const savedStaff = await manager.save(staff);
+
+      // 3️⃣ Create Doctor
+      const doctor = manager.create(Doctor, {
+        staffId: savedStaff.id,
+        degrees: dto.doctor.degrees,
+        experience: dto.doctor.experience,
+        specialty: dto.doctor.specialty,
+        department: dto.doctor.department,
+        status: DoctorStatus.ACTIVE,
+        dateAdded: dto.doctor.dateAdded,
+      });
+      const savedDoctor = await manager.save(doctor);
+
+      // 4️⃣ Update role cuối cùng
+      savedUser.role = UserRole.DOCTOR;
+      await manager.save(savedUser);
+
+      const staffWithStaff = await manager.findOne(Doctor, {
+        where: { id: savedDoctor.id },
+        relations: {
+          staff: {
+            user: true,
+          },
+        },
+      });
+      return this.mapper.toResponse(staffWithStaff!);
+    });
   }
+
+  // protected async beforeUpdate(
+  //   id: string,
+  //   data: UpdateDoctorDto,
+  // ): Promise<void> {
+  //   const doctor = await getEntityOrFail(
+  //     this.repo,
+  //     id,
+  //     buildCrudMessage(Resource.DOCTOR, CrudAction.NOT_FOUND),
+  //   );
+
+  // }
 
   protected async beforeDelete(id: string): Promise<void> {
     await getEntityOrFail(

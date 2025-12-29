@@ -10,7 +10,6 @@ export class UserMapper extends BaseMapper<User, UserResponseDto> {
       role: user.role,
       isActive: user.isActive,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
     };
   }
 }

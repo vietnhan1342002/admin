@@ -7,9 +7,6 @@ export class CreateStaffDto extends PickType(CreateUserDto, [
   'password',
 ] as const) {
   @IsString()
-  userId: string;
-
-  @IsString()
   firstName: string;
 
   @IsString()
