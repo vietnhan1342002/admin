@@ -36,7 +36,7 @@ export abstract class AuditableBaseService<
       ...data,
       author: this.userContext.userId,
     });
-    if (!result) throw new NotFoundException('Item not found');
+    if (!result) throw new NotFoundException('Không có dữ liệu.');
     return this.mapper.toResponse(result);
   }
 }

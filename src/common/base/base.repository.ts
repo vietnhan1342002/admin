@@ -60,16 +60,16 @@ export class BaseRepository<
   }
 
   async findById(id: string): Promise<T | null> {
-    return this.repo.findOne({ where: { id } as any });
+    return await this.repo.findOne({ where: { id } as any });
   }
 
   async findOne(filter: FindOptionsWhere<T>): Promise<T | null> {
-    return this.repo.findOne({ where: filter });
+    return await this.repo.findOne({ where: filter });
   }
 
   async create(data: DeepPartial<T>): Promise<T> {
     const entity = this.repo.create(data);
-    return this.repo.save(entity);
+    return await this.repo.save(entity);
   }
 
   async update(id: string, data: DeepPartial<T>): Promise<T | null> {
@@ -77,7 +77,7 @@ export class BaseRepository<
     if (!entity) return null;
 
     Object.assign(entity, data);
-    return this.repo.save(entity);
+    return await this.repo.save(entity);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -101,6 +101,6 @@ export class BaseRepository<
       throw new Error('EntityManager is not provided');
     }
 
-    return this.manager.transaction(fn);
+    return await this.manager.transaction(fn);
   }
 }

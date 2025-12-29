@@ -8,7 +8,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { jwtConfig } from 'src/config/auth.config';
-import { PostsModule } from '../posts/posts.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { PostsModule } from '../posts/posts.module';
       useFactory: jwtConfig,
       inject: [ConfigService],
     }),
-    PostsModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
