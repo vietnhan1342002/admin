@@ -7,16 +7,20 @@ import {
   Query,
   Patch,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { PaginationParams } from './base.repository';
 import { IBaseService } from 'src/interfaces/IBaseService';
 import { BaseFilterDto } from 'src/shared/utils/filter.dto.util';
 import { ResponseAPI } from 'src/shared/Helper/ResposeApi.helper';
 import { HttpMessages } from 'src/shared/Enum/messages';
+import { SKIP_DELETE } from '../decorators/skipDelete.decorator';
+import { Reflector } from '@nestjs/core';
 
 export class BaseController<CreateDTO, UpdateDTO, ResponseDTO> {
   constructor(
     protected readonly service: IBaseService<CreateDTO, UpdateDTO, ResponseDTO>,
+    protected readonly reflector?: Reflector,
   ) {}
 
   @Get()
@@ -65,6 +69,13 @@ export class BaseController<CreateDTO, UpdateDTO, ResponseDTO> {
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
+    const skip = this.reflector?.getAllAndOverride<boolean>(SKIP_DELETE, [
+      this.constructor,
+    ]);
+
+    if (skip) {
+      throw new NotFoundException('Không có đường dẫn này!');
+    }
     return ResponseAPI.success(
       await this.service.delete(id),
       HttpMessages.SUCCESS,
