@@ -10,6 +10,6 @@ import { StaffMapper } from './mapper/staff.mapper';
   imports: [TypeOrmModule.forFeature([Staff])],
   controllers: [StaffsController],
   providers: [StaffsService, StaffRepository, StaffMapper],
-  exports: [StaffsService],
+  exports: [StaffsService, StaffRepository],
 })
 export class StaffsModule {}

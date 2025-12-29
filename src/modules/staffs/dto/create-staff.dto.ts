@@ -1,26 +1,20 @@
-import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { StaffStatus } from '../enum/staff.enum';
-import { PickType } from '@nestjs/mapped-types';
+import { Type } from 'class-transformer';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
-export class CreateStaffDto extends PickType(CreateUserDto, [
-  'email',
-  'password',
-] as const) {
-  @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
-
-  @IsOptional()
-  @IsString()
-  avatarUrl?: string;
+export class CreateStaffDto {
+  @ValidateNested()
+  @Type(() => CreateUserDto)
+  user: CreateUserDto;
 
   @IsString()
   position: string;
-
-  @IsString()
-  phone: string;
 
   @IsOptional()
   @IsEnum(StaffStatus)
