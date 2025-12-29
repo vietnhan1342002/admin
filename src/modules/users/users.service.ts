@@ -19,6 +19,10 @@ import { UserResponseDto } from './dto/response-user.dto';
 import { UserRepository } from './repositories/users.repository';
 import { Request } from 'express';
 import { UserRole } from './enum/user-role.enum';
+import { DoctorRepository } from '../doctors/repositories/doctor.repository';
+import { StaffRepository } from '../staffs/repositories/staff.repository';
+import { Doctor } from '../doctors/entities/doctor.entity';
+import { Staff } from '../staffs/entities/staff.entity';
 
 @Injectable()
 export class UsersService extends BaseService<
@@ -29,6 +33,8 @@ export class UsersService extends BaseService<
 > {
   constructor(
     private repo: UserRepository,
+    private staffRepo: StaffRepository,
+    private doctorRepo: DoctorRepository,
     mapper: UserMapper,
   ) {
     super(repo, mapper);
@@ -72,6 +78,10 @@ export class UsersService extends BaseService<
       email: dto.email,
       password: hashed,
       role: UserRole.STAFF,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
+      avatarUrl: dto.avatarUrl,
+      phone: dto.phone,
     });
 
     return this.mapper.toResponse(newUser);
@@ -112,5 +122,17 @@ export class UsersService extends BaseService<
     }
     const newUser = await this.repo.update(id, { role });
     return this.mapper.toResponse(newUser!);
+  }
+
+  override async delete(id: string): Promise<void> {
+    return this.repo.withTransaction(async (manager) => {
+      const user = await manager.findOne(User, { where: { id } });
+      if (!user) {
+        buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND);
+      }
+      await manager.softDelete(User, id);
+      await manager.softDelete(Staff, { userId: id });
+      // await manager.softDelete(Doctor,{staffId: })
+    });
   }
 }
