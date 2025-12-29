@@ -1,17 +1,17 @@
 import { BaseEntity } from 'src/common/base/base.entity';
 import { Entity, Column, Index, OneToOne, JoinColumn } from 'typeorm';
 import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
-import { Staff } from 'src/modules/staffs/entities/staff.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 
 @Entity()
 @Index('IDX_DOCTOR_STATUS_SPECIALTY', ['status', 'specialty'])
 export class Doctor extends BaseEntity {
-  @Column({ name: 'staff_id', type: 'uuid' })
-  staffId: string;
+  @Column({ name: 'user_id', type: 'uuid' })
+  userId: string;
 
-  @OneToOne(() => Staff, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'staff_id' })
-  staff: Staff;
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @Column({
     type: 'enum',

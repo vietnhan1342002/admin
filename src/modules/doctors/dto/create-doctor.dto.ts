@@ -37,16 +37,11 @@ export class CreateDoctorProfileDto {
 import { Type } from 'class-transformer';
 import { ValidateNested } from 'class-validator';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
-import { CreateStaffDto } from 'src/modules/staffs/dto/create-staff.dto';
 
 export class CreateDoctorDto {
   @ValidateNested()
   @Type(() => CreateUserDto)
   user: CreateUserDto;
-
-  @ValidateNested()
-  @Type(() => CreateStaffDto)
-  staff: CreateStaffDto;
 
   @ValidateNested()
   @Type(() => CreateDoctorProfileDto)
