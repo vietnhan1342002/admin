@@ -1,39 +1,54 @@
 // src/modules/doctors/dto/create-doctor.dto.ts
-import { IsEnum, IsInt, IsOptional, IsString, IsEmail } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
 
-export class CreateDoctorDto {
-  @IsString()
-  fullName: string;
-
-  @IsOptional()
-  @IsString()
-  avatar?: string;
-
+export class CreateDoctorProfileDto {
   @IsEnum(DoctorSpecialty)
+  @IsNotEmpty()
   specialty: DoctorSpecialty;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  description?: string;
+  department?: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsInt()
   experience?: number;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   degrees?: string;
 
   @IsOptional()
-  @IsEmail()
-  contactEmail?: string;
-
-  @IsOptional()
-  @IsString()
-  contactPhone?: string;
-
-  @IsOptional()
   @IsEnum(DoctorStatus)
   status?: DoctorStatus;
+
+  @IsDateString()
+  dateAdded: string;
+}
+
+import { Type } from 'class-transformer';
+import { ValidateNested } from 'class-validator';
+import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
+import { CreateStaffDto } from 'src/modules/staffs/dto/create-staff.dto';
+
+export class CreateDoctorDto {
+  @ValidateNested()
+  @Type(() => CreateUserDto)
+  user: CreateUserDto;
+
+  @ValidateNested()
+  @Type(() => CreateStaffDto)
+  staff: CreateStaffDto;
+
+  @ValidateNested()
+  @Type(() => CreateDoctorProfileDto)
+  doctor: CreateDoctorProfileDto;
 }

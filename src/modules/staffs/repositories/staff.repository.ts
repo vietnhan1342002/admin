@@ -24,7 +24,8 @@ export class StaffRepository extends BaseRepository<Staff> {
     const qb = this.repo
       .createQueryBuilder('staff')
       .leftJoinAndSelect('staff.user', 'user')
-      .where('staff.deletedAt IS NULL');
+      .where('staff.deletedAt IS NULL')
+      .distinct(true);
 
     // filter
     if (params?.filter?.status) {
@@ -51,10 +52,10 @@ export class StaffRepository extends BaseRepository<Staff> {
   }
 
   async findById(id: string): Promise<Staff | null> {
-    const staff = await this.repo.findOne({
+    const doctor = await this.repo.findOne({
       where: { id },
       relations: ['user'],
     });
-    return staff;
+    return doctor;
   }
 }

@@ -1,13 +1,9 @@
+import { UserResponseDto } from 'src/modules/users/dto/response-user.dto';
 import { StaffStatus } from '../enum/staff.enum';
 
 export class StaffResponseDto {
   id: string;
-  user: {
-    id: string;
-    email: string;
-    role: string;
-    isActive: boolean;
-  } | null;
+  user: UserResponseDto | null;
   firstName: string;
   lastName: string;
   avatarUrl?: string;
@@ -16,5 +12,4 @@ export class StaffResponseDto {
   status: StaffStatus;
   dateAdded: Date;
   createdAt: Date;
-  updatedAt: Date;
 }

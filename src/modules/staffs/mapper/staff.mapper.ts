@@ -12,6 +12,7 @@ export class StaffMapper extends BaseMapper<Staff, StaffResponseDto> {
             email: entity.user.email,
             role: entity.user.role,
             isActive: entity.user.isActive,
+            createdAt: entity.user.createdAt,
           }
         : null,
       firstName: entity.firstName,
@@ -21,7 +22,6 @@ export class StaffMapper extends BaseMapper<Staff, StaffResponseDto> {
       status: entity.status,
       dateAdded: entity.dateAdded,
       createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
     };
   }
 }

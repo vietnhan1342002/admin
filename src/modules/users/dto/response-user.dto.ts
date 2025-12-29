@@ -6,5 +6,4 @@ export class UserResponseDto {
   role: UserRole;
   isActive: boolean;
   createdAt: Date;
-  updatedAt: Date;
 }

@@ -18,6 +18,7 @@ import { BaseService } from 'src/common/base/base.service';
 import { UserResponseDto } from './dto/response-user.dto';
 import { UserRepository } from './repositories/users.repository';
 import { Request } from 'express';
+import { UserRole } from './enum/user-role.enum';
 
 @Injectable()
 export class UsersService extends BaseService<
@@ -70,7 +71,7 @@ export class UsersService extends BaseService<
     const newUser = await this.repo.create({
       email: dto.email,
       password: hashed,
-      role: dto.role,
+      role: UserRole.STAFF,
     });
 
     return this.mapper.toResponse(newUser);
@@ -100,5 +101,16 @@ export class UsersService extends BaseService<
     user.password = await hashPassword(dto.newPassword);
     await this.repo.update(user.id, { password: user.password });
     return { message: 'Password updated successfully' };
+  }
+
+  async updateRole(id: string, role: UserRole) {
+    const user = await this.repo.findOne({ id });
+    if (!user) {
+      throw new NotFoundException(
+        buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND),
+      );
+    }
+    const newUser = await this.repo.update(id, { role });
+    return this.mapper.toResponse(newUser!);
   }
 }
