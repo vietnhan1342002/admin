@@ -24,8 +24,7 @@ export class DoctorRepository extends BaseRepository<Doctor> {
 
     const qb = this.repo
       .createQueryBuilder('doctor')
-      .leftJoinAndSelect('doctor.staff', 'staff')
-      .leftJoinAndSelect('staff.user', 'user')
+      .leftJoinAndSelect('doctor.user', 'user')
       .where('doctor.deletedAt IS NULL')
       .distinct(true);
 
@@ -36,16 +35,9 @@ export class DoctorRepository extends BaseRepository<Doctor> {
       });
     }
 
-    if (params?.filter?.staffStatus) {
-      qb.andWhere('staff.status = :staffStatus', {
-        staffStatus: params.filter.staffStatus,
-      });
-    }
-
     // sort
     const sortByMap: Record<string, string> = {
       createdAt: 'doctor.createdAt',
-      staffCreatedAt: 'staff.createdAt',
     };
 
     const sortField =
@@ -71,9 +63,7 @@ export class DoctorRepository extends BaseRepository<Doctor> {
     const doctor = await this.repo.findOne({
       where: { id },
       relations: {
-        staff: {
-          user: true,
-        },
+        user: true,
       },
     });
 

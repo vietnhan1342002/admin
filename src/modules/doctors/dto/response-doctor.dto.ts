@@ -1,9 +1,11 @@
 // src/modules/doctors/dto/doctor-response.dto.ts
-import { StaffResponseDto } from 'src/modules/staffs/dto/response-staff.dto';
 import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
+import { UserResponseDto } from 'src/modules/users/dto/response-user.dto';
 
 export class ResponseDoctorDto {
   id: string;
+
+  user: UserResponseDto | null;
 
   specialty: DoctorSpecialty;
   department?: string;
@@ -13,6 +15,4 @@ export class ResponseDoctorDto {
 
   dateAdded: Date;
   createdAt: Date;
-
-  staff: StaffResponseDto | null;
 }

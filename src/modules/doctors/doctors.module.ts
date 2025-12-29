@@ -10,6 +10,6 @@ import { DoctorMapper } from './mapper/doctor.mapper';
   imports: [TypeOrmModule.forFeature([Doctor])],
   controllers: [DoctorsController],
   providers: [DoctorsService, DoctorRepository, DoctorMapper],
-  exports: [DoctorsService],
+  exports: [DoctorsService, DoctorRepository],
 })
 export class DoctorsModule {}

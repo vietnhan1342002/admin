@@ -8,10 +8,9 @@ import { DoctorRepository } from './repositories/doctor.repository';
 import { DoctorMapper } from './mapper/doctor.mapper';
 import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
-import { IsNull } from 'typeorm';
+import { DataSource, IsNull } from 'typeorm';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 import { User } from '../users/entities/user.entity';
-import { Staff } from '../staffs/entities/staff.entity';
 import { hashPassword } from 'src/shared/utils/hashPassword';
 import { UserRole } from '../users/enum/user-role.enum';
 import { DoctorStatus } from './enum/doctor.enum';
@@ -25,6 +24,7 @@ export class DoctorsService extends BaseService<
 > {
   constructor(
     private readonly repo: DoctorRepository,
+    private readonly datasource: DataSource,
     mapper: DoctorMapper,
   ) {
     super(repo, mapper);
@@ -32,48 +32,43 @@ export class DoctorsService extends BaseService<
 
   override async create(dto: CreateDoctorDto) {
     return this.repo.withTransaction(async (manager) => {
-      // 1️⃣ Create User
+      //Create User
 
-      const existedUser = await manager.findOne(User, {
+      const existedEmail = await manager.findOne(User, {
         where: { email: dto.user.email, deletedAt: IsNull() },
       });
 
-      if (existedUser) {
+      if (existedEmail) {
         throw new ConflictException(
-          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS),
+          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS_EMAIL),
+        );
+      }
+
+      const existedPhone = await manager.findOne(User, {
+        where: { phone: dto.user.phone, deletedAt: IsNull() },
+      });
+
+      if (existedPhone) {
+        throw new ConflictException(
+          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS_PHONE),
         );
       }
       const user = manager.create(User, {
         email: dto.user.email,
         password: await hashPassword(dto.user.password),
-        role: UserRole.STAFF,
+        role: UserRole.DOCTOR,
+        firstName: dto.user.firstName,
+        lastName: dto.user.lastName,
+        avatarUrl: dto.user.avatarUrl,
+        phone: dto.user.phone,
         isActive: true,
       });
+
       const savedUser = await manager.save(user);
 
-      const existedStaff = await manager.findOne(Staff, {
-        where: { phone: dto.staff.phone, deletedAt: IsNull() },
-      });
-
-      if (existedStaff) {
-        throw new ConflictException(
-          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS),
-        );
-      }
-      // 2️⃣ Create Staff
-      const staff = manager.create(Staff, {
-        userId: savedUser.id,
-        firstName: dto.staff.firstName,
-        lastName: dto.staff.lastName,
-        phone: dto.staff.phone,
-        position: dto.staff.position,
-        dateAdded: dto.staff.dateAdded,
-      });
-      const savedStaff = await manager.save(staff);
-
-      // 3️⃣ Create Doctor
+      //Create Doctor
       const doctor = manager.create(Doctor, {
-        staffId: savedStaff.id,
+        userId: savedUser.id,
         degrees: dto.doctor.degrees,
         experience: dto.doctor.experience,
         specialty: dto.doctor.specialty,
@@ -83,33 +78,39 @@ export class DoctorsService extends BaseService<
       });
       const savedDoctor = await manager.save(doctor);
 
-      // 4️⃣ Update role cuối cùng
-      savedUser.role = UserRole.DOCTOR;
       await manager.save(savedUser);
 
-      const staffWithStaff = await manager.findOne(Doctor, {
+      const doctorWithUser = await manager.findOne(Doctor, {
         where: { id: savedDoctor.id },
         relations: {
-          staff: {
-            user: true,
-          },
+          user: true,
         },
       });
-      return this.mapper.toResponse(staffWithStaff!);
+      return this.mapper.toResponse(doctorWithUser!);
     });
   }
 
-  // protected async beforeUpdate(
-  //   id: string,
-  //   data: UpdateDoctorDto,
-  // ): Promise<void> {
-  //   const doctor = await getEntityOrFail(
-  //     this.repo,
-  //     id,
-  //     buildCrudMessage(Resource.DOCTOR, CrudAction.NOT_FOUND),
-  //   );
+  protected async beforeUpdate(
+    id: string,
+    data: UpdateDoctorDto,
+  ): Promise<void> {
+    const doctor = await getEntityOrFail(
+      this.repo,
+      id,
+      buildCrudMessage(Resource.DOCTOR, CrudAction.NOT_FOUND),
+    );
+    if (data.user?.phone && data.user.phone !== doctor.user.phone) {
+      const existedPhone = await this.datasource.getRepository(User).findOne({
+        where: { phone: data.user.phone, deletedAt: IsNull() },
+      });
 
-  // }
+      if (existedPhone) {
+        throw new ConflictException(
+          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS_PHONE),
+        );
+      }
+    }
+  }
 
   protected async beforeDelete(id: string): Promise<void> {
     await getEntityOrFail(
