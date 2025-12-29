@@ -37,7 +37,7 @@ export abstract class BaseService<
 
   async findById(id: string): Promise<ResponseDTO> {
     const entity = await this.repository.findById(id);
-    if (!entity) throw new NotFoundException('Item not found');
+    if (!entity) throw new NotFoundException('Không có dữ liệu.');
     return this.mapper.toResponse(entity);
   }
 
@@ -50,7 +50,7 @@ export abstract class BaseService<
   async update(id: string, data: UpdateDTO): Promise<ResponseDTO | null> {
     await this.beforeUpdate(id, data);
     const entity = await this.repository.update(id, data);
-    if (!entity) throw new NotFoundException('Item not found');
+    if (!entity) throw new NotFoundException('Không có dữ liệu.');
     return this.mapper.toResponse(entity);
   }
 
