@@ -12,8 +12,6 @@ interface PayLoad {
   id: string;
   email: string;
   role: UserRole;
-  firstName: string;
-  lastName: string;
 }
 
 @Injectable()
@@ -32,12 +30,14 @@ export class AuthService {
       throw new UnauthorizedException('Email hoặc mật khẩu không chính xác.');
     }
 
+    if (!user.isActive || user.deletedAt) {
+      throw new UnauthorizedException('Người dùng tạm khóa.');
+    }
+
     const tokens = await this.generateUserTokens({
       id: user.id,
       email: user.email,
       role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
     });
 
     return {
