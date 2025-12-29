@@ -15,7 +15,7 @@ export class BaseServiceWithCache<T extends ObjectLiteral> {
     let entity = await this.cache.get(cacheKey);
     if (!entity) {
       entity = await this.repository.findById(id);
-      if (!entity) throw new NotFoundException('Item not found');
+      if (!entity) throw new NotFoundException('Không có dữ liệu.');
       await this.cache.set(cacheKey, entity);
     }
     return entity;
