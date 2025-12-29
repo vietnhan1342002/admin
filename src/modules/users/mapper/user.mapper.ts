@@ -8,6 +8,10 @@ export class UserMapper extends BaseMapper<User, UserResponseDto> {
       id: user.id,
       email: user.email,
       role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatarUrl: user.avatarUrl || null,
+      phone: user.phone,
       isActive: user.isActive,
       createdAt: user.createdAt,
     };
