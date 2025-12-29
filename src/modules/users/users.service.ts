@@ -132,7 +132,7 @@ export class UsersService extends BaseService<
       }
       await manager.softDelete(User, id);
       await manager.softDelete(Staff, { userId: id });
-      // await manager.softDelete(Doctor,{staffId: })
+      await manager.softDelete(Doctor, { userId: id });
     });
   }
 }
