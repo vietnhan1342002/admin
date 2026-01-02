@@ -17,6 +17,7 @@ export class DoctorMapper extends BaseMapper<Doctor, ResponseDoctorDto> {
             avatarUrl: entity.user.avatarUrl || null,
             phone: entity.user.phone,
             isActive: entity.user.isActive,
+            isVerifyEmail: entity.user.isVerifyEmail,
             createdAt: entity.user.createdAt,
           }
         : null,

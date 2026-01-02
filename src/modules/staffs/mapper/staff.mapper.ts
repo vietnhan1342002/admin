@@ -16,6 +16,7 @@ export class StaffMapper extends BaseMapper<Staff, StaffResponseDto> {
             avatarUrl: entity.user.avatarUrl || null,
             phone: entity.user.phone,
             isActive: entity.user.isActive,
+            isVerifyEmail: entity.user.isVerifyEmail,
             createdAt: entity.user.createdAt,
           }
         : null,
