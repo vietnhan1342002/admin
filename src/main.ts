@@ -38,13 +38,14 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   const port = process.env.PORT ?? 8000;
 
+  const devOrigins = ['http://localhost:5173', 'http://103.75.186.152:5000'];
+
+  const prodOrigins = [
+    'https://admin.yourdomain.com',
+    'https://yourdomain.com',
+  ];
   app.enableCors({
-    origin: [
-      'http://172.26.35.127:5173',
-      // 'http://172.26.35.98:8000',
-      'http://localhost:5173',
-    ],
-    // origin: 'https://3k01w00c-8000.asse.devtunnels.ms/',
+    origin: process.env.NODE_ENV === 'production' ? prodOrigins : devOrigins,
     credentials: true,
   });
   await app.listen(port, '0.0.0.0');
