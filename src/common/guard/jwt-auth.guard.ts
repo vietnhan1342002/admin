@@ -1,6 +1,7 @@
 import {
   ExecutionContext,
   Injectable,
+  Logger,
   UnauthorizedException,
   //   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,6 +13,8 @@ import { HttpMessages } from 'src/shared/Enum/messages';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
+  private readonly logger = new Logger(JwtAuthGuard.name);
+
   constructor(private reflector: Reflector) {
     super();
   }
@@ -45,8 +48,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   // }
   handleRequest(err: any, user: any) {
     if (err || !user) {
+      this.logger.warn(`Unauthorized access attempt jwt`);
       throw err || new UnauthorizedException(HttpMessages.UNAUTHORIZED);
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    this.logger.log(`User authenticated: ${user.id} - ${user.email}`);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return user;
   }
