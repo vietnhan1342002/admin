@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xác nhận đăng ký tài khoản</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f6f8;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 24px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .header {
+      background-color: #4CAF50;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 22px;
+    }
+
+    .content {
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    .content h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    .button-wrapper {
+      text-align: center;
+      margin: 30px 0;
+    }
+
+    .verify-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #4CAF50;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .footer {
+      background-color: #f4f6f8;
+      text-align: center;
+      padding: 16px;
+      font-size: 13px;
+      color: #777777;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #666666;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>{{appName}}</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <h2>Xin chào {{name}},</h2>
+
+      <p>
+        Cảm ơn bạn đã đăng ký tài khoản tại <strong>{{appName}}</strong>.
+      </p>
+
+      <p>
+        Vui lòng nhấn vào nút bên dưới để <strong>xác nhận địa chỉ email</strong> và hoàn tất việc đăng ký:
+      </p>
+
+      <div class="button-wrapper">
+        <a href="{{verifyUrl}}" class="verify-button">
+          Xác nhận tài khoản
+        </a>
+      </div>
+
+      <p>
+        Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.
+      </p>
+
+      <p class="note">
+        ⚠️ Liên kết xác nhận chỉ có hiệu lực trong <strong>{{expiredIn}}</strong>.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        © {{year}} {{appName}}. All rights reserved.
+      </p>
+      <p>
+        Hỗ trợ: <a href="mailto:{{supportEmail}}">{{supportEmail}}</a>
+      </p>
+    </div>
+  </div>
+</body>
+
+</html>

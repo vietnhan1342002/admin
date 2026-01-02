@@ -3,9 +3,13 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Logger,
   Post,
+  Query,
+  Req,
   Request,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -16,18 +20,13 @@ import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { LocalAuthGuard } from 'src/common/guard/local-auth.guard';
 import { ResponseAPI } from 'src/shared/Helper/ResposeApi.helper';
 import { HttpMessages } from 'src/shared/Enum/messages';
-import { ResponseException } from 'src/common/exceptions/resposeException';
 // import { Public } from 'src/csrc/common/guard/local-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('auth')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name);
   constructor(private readonly authService: AuthService) {}
-
-  @Get('profile')
-  getProfile(@Request() req: express.Request) {
-    return this.authService.profile(req);
-  }
 
   @Public()
   @UseGuards(LocalAuthGuard)
@@ -38,22 +37,17 @@ export class AuthController {
   ) {
     const user = await this.authService.login(loginDto);
 
-    if (!user) {
-      throw new ResponseException(
-        HttpMessages.LOGIN_FAILED,
-        HttpStatus.UNAUTHORIZED,
-        HttpMessages.LOGIN_FAILED,
-      );
-    }
+    // Production: set cookie
     response.cookie('jwt', user.accessToken, {
       httpOnly: true,
       path: '/',
       sameSite: 'none',
-      secure: false,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 ngày
     });
+    // Dev: trả token qua body
     return ResponseAPI.success(
-      user.accessToken,
+      { accessToken: user.accessToken },
       HttpMessages.LOGIN_SUCCESS,
       HttpStatus.ACCEPTED,
     );
@@ -74,5 +68,45 @@ export class AuthController {
       HttpMessages.LOGOUT_SUCCESS,
       HttpStatus.ACCEPTED,
     );
+  }
+
+  @Get('profile')
+  async getProfile(@Request() req: express.Request) {
+    if (!req.user) {
+      throw new UnauthorizedException('Người dùng chưa đăng nhập');
+    }
+    return ResponseAPI.success(
+      await this.authService.profile(req.user.id),
+      HttpMessages.SUCCESS,
+      HttpStatus.ACCEPTED,
+    );
+  }
+
+  @Public()
+  @Get('verify-email')
+  async verifyEmail(@Query('token') token: string) {
+    return ResponseAPI.success(
+      await this.authService.verifyEMail(token),
+      HttpMessages.SUCCESS,
+      HttpStatus.ACCEPTED,
+    );
+  }
+
+  @Get('check-cookie')
+  checkCookie(@Req() req: express.Request) {
+    const cookies = req.cookies; // toàn bộ cookie gửi lên
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const jwtCookie = cookies['jwt'];
+
+    if (jwtCookie) {
+      this.logger.log(`JWT cookie found: ${jwtCookie}`);
+    } else {
+      this.logger.warn('JWT cookie not found in request');
+    }
+
+    return {
+      message: jwtCookie ? 'JWT cookie found' : 'JWT cookie not found',
+      cookies,
+    };
   }
 }

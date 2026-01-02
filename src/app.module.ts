@@ -13,6 +13,8 @@ import { RolesGuard } from './common/guard/roles.guard';
 import { BannerModule } from './modules/banner/banner.module';
 import { StaffsModule } from './modules/staffs/staffs.module';
 import { DoctorsModule } from './modules/doctors/doctors.module';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailConfig } from './config/mail.config';
 // import { typeormConfig } from './config/database.config';
 @Module({
   imports: [
@@ -27,6 +29,9 @@ import { DoctorsModule } from './modules/doctors/doctors.module';
           limit: 100,
         },
       ],
+    }),
+    MailerModule.forRootAsync({
+      useFactory: () => MailConfig(),
     }),
     UsersModule,
     AuthModule,

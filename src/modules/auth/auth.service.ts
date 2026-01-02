@@ -1,13 +1,21 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, IsNull, MoreThan, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { comparePassword } from 'src/shared/utils/hashPassword';
 import { UserRole } from '../users/enum/user-role.enum';
 import { Request } from 'express';
+import { MailerService } from '@nestjs-modules/mailer';
+import { EmailRepository } from '../users/repositories/email.repository';
+import { EmailVerificationToken } from '../users/entities/email.entity';
 interface PayLoad {
   id: string;
   email: string;
@@ -19,7 +27,12 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(EmailVerificationToken)
+    private emailsRepository: Repository<EmailVerificationToken>,
+    private emailRepo: EmailRepository,
     private jwtService: JwtService,
+    private mailerService: MailerService,
+    private manager: EntityManager,
   ) {}
 
   async login(loginDto: LoginDto) {
@@ -32,6 +45,10 @@ export class AuthService {
 
     if (!user.isActive || user.deletedAt) {
       throw new UnauthorizedException('Người dùng tạm khóa.');
+    }
+
+    if (!user.isVerifyEmail) {
+      throw new UnauthorizedException('Người dùng chưa được kích hoạt.');
     }
 
     const tokens = await this.generateUserTokens({
@@ -57,14 +74,24 @@ export class AuthService {
     return null;
   }
 
-  profile(req: Request) {
-    const user = req.user;
-
+  async profile(id: string) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+    });
     if (!user) {
-      throw new UnauthorizedException('Người dùng chưa đăng nhập');
+      throw new NotFoundException('Không có người dùng này');
     }
+    const cleanUser = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatarUrl: user.avatarUrl,
+      phone: user.phone,
+    };
 
-    return user;
+    return cleanUser;
   }
 
   async generateUserTokens(payLoad: PayLoad) {
@@ -79,6 +106,31 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+    };
+  }
+
+  async verifyEMail(token: string) {
+    const record = await this.emailRepo.findTokenWithUser({
+      token,
+      usedAt: IsNull(),
+      expiredAt: MoreThan(new Date()),
+    });
+
+    if (!record) {
+      throw new BadRequestException(
+        'Link xác nhận không hợp lệ hoặc đã hết hạn',
+      );
+    }
+    await this.manager.transaction(async (manager) => {
+      record.user.isVerifyEmail = true;
+      record.usedAt = new Date();
+
+      await manager.save(User, record.user);
+      await manager.save(EmailVerificationToken, record);
+    });
+
+    return {
+      message: 'Xác nhận email thành công. Bạn có thể đăng nhập.',
     };
   }
 }
