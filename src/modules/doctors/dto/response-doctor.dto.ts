@@ -1,12 +1,12 @@
 // src/modules/doctors/dto/doctor-response.dto.ts
 import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
-import { UserResponseDto } from 'src/modules/users/dto/response-user.dto';
-
 export class ResponseDoctorDto {
   id: string;
-
-  user: UserResponseDto | null;
-
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+  avatarUrl?: string | null;
   specialty: DoctorSpecialty;
   department?: string;
   experience?: number;

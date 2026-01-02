@@ -1,6 +1,6 @@
-// src/modules/doctors/dto/create-doctor.dto.ts
 import {
   IsDateString,
+  IsEmail,
   IsEnum,
   IsInt,
   IsNotEmpty,
@@ -9,7 +9,23 @@ import {
 } from 'class-validator';
 import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
 
-export class CreateDoctorProfileDto {
+export class CreateDoctorDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  @IsString()
+  phone: string;
+
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
+
   @IsEnum(DoctorSpecialty)
   @IsNotEmpty()
   specialty: DoctorSpecialty;
@@ -32,18 +48,4 @@ export class CreateDoctorProfileDto {
 
   @IsDateString()
   dateAdded: string;
-}
-
-import { Type } from 'class-transformer';
-import { ValidateNested } from 'class-validator';
-import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
-
-export class CreateDoctorDto {
-  @ValidateNested()
-  @Type(() => CreateUserDto)
-  user: CreateUserDto;
-
-  @ValidateNested()
-  @Type(() => CreateDoctorProfileDto)
-  doctor: CreateDoctorProfileDto;
 }

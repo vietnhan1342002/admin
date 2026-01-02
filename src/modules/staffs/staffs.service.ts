@@ -52,7 +52,7 @@ export class StaffsService extends BaseService<
 
       if (existedPhone) {
         throw new ConflictException(
-          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS_PHONE),
+          buildCrudMessage(Resource.PHONE, CrudAction.ALREADY_EXISTS),
         );
       }
     }
@@ -79,7 +79,7 @@ export class StaffsService extends BaseService<
 
       if (existedUser) {
         throw new ConflictException(
-          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS_EMAIL),
+          buildCrudMessage(Resource.EMAIL, CrudAction.ALREADY_EXISTS),
         );
       }
 
@@ -90,7 +90,7 @@ export class StaffsService extends BaseService<
 
       if (existedPhone) {
         throw new ConflictException(
-          buildCrudMessage(Resource.USER, CrudAction.ALREADY_EXISTS_PHONE),
+          buildCrudMessage(Resource.PHONE, CrudAction.ALREADY_EXISTS),
         );
       }
 
