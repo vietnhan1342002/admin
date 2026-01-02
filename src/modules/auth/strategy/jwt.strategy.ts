@@ -14,17 +14,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request): string | null => {
-          if (
-            request &&
-            request.cookies &&
-            typeof request.cookies['jwt'] === 'string'
-          ) {
-            return request.cookies['jwt'];
-          }
-          return null;
-        },
+        (req: Request) =>
+          typeof req?.cookies?.jwt === 'string' ? req.cookies.jwt : null,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
+
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET as string,
     });
