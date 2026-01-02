@@ -9,5 +9,6 @@ export class UserResponseDto {
   avatarUrl?: string | null;
   phone: string;
   isActive: boolean;
+  isVerifyEmail: boolean;
   createdAt: Date;
 }

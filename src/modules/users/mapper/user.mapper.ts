@@ -13,6 +13,7 @@ export class UserMapper extends BaseMapper<User, UserResponseDto> {
       avatarUrl: user.avatarUrl || null,
       phone: user.phone,
       isActive: user.isActive,
+      isVerifyEmail: user.isVerifyEmail,
       createdAt: user.createdAt,
     };
   }

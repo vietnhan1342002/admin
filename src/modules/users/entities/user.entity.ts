@@ -30,6 +30,9 @@ export class User extends BaseEntity {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
+  @Column({ name: 'is_verify_email', type: 'boolean' })
+  isVerifyEmail: boolean;
+
   @Column({ length: 20 })
   phone: string;
 }
