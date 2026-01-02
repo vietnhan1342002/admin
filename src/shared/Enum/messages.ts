@@ -46,8 +46,6 @@ export enum CrudAction {
   DELETED = 'đã được xóa thành công',
   NOT_FOUND = 'không tồn tại',
   ALREADY_EXISTS = 'đã tồn tại',
-  ALREADY_EXISTS_EMAIL = 'email đã tồn tại',
-  ALREADY_EXISTS_PHONE = 'số điện thoại đã tồn tại',
 }
 
 export enum Resource {
@@ -57,4 +55,5 @@ export enum Resource {
   DOCTOR = 'Bác sĩ',
   COMMENT = 'Bình luận',
   EMAIL = 'email',
+  PHONE = 'Số điện thoại',
 }
