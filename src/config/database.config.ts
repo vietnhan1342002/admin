@@ -11,9 +11,14 @@ export const TypeOrmConfigModule = TypeOrmModule.forRootAsync({
     username: config.get<string>('DB_USER'),
     password: config.get<string>('DB_PASSWORD'),
     database: config.get<string>('DB_NAME'),
+
     autoLoadEntities: true,
-    synchronize: true, // Không dùng synchronize khi production / migration
-    // logging: true,
-    // migrations: ['dist/migrations/*.js'], // migration chạy trên JS build
+
+    synchronize: false, // Không dùng synchronize khi production / migration
+    migrationsRun: true,
+
+    migrations: ['dist/database/migrations/*.js'],
+
+    logging: config.get<string>('NODE_ENV') !== 'production',
   }),
 });
