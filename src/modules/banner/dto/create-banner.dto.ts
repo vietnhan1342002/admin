@@ -29,9 +29,9 @@ export class CreateBannerDto {
 
   @IsOptional()
   @IsDateString()
-  startAt?: string;
+  startAt?: Date;
 
   @IsOptional()
   @IsDateString()
-  endAt?: string;
+  endAt?: Date;
 }
