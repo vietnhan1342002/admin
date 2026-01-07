@@ -10,12 +10,15 @@ export const TypeOrmConfigModule = TypeOrmModule.forRootAsync({
     port: config.get<number>('DB_PORT') || 3306,
     username: config.get<string>('DB_USER'),
     password: config.get<string>('DB_PASSWORD'),
-    database: config.get<string>('DB_NAME'),
+    database:
+      config.get<string>('NODE_ENV') === 'production'
+        ? config.get<string>('DB_NAME')
+        : config.get<string>('DB_NAME_DEV'),
 
     autoLoadEntities: true,
 
-    synchronize: false, // Không dùng synchronize khi production / migration
-    migrationsRun: true,
+    synchronize: config.get<string>('NODE_ENV') !== 'production', // Không dùng synchronize khi production / migration
+    migrationsRun: false,
 
     migrations: ['dist/database/migrations/*.js'],
 
