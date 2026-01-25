@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { BaseService } from 'src/common/base/base.service';
@@ -10,6 +10,7 @@ import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { DataSource } from 'typeorm';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
+import { generateSlug } from 'src/shared/Helper/generate-slug.helper';
 
 @Injectable()
 export class DoctorsService extends BaseService<
@@ -26,21 +27,20 @@ export class DoctorsService extends BaseService<
     super(repo, mapper);
   }
 
+  async generateUniqueSlug(name: string): Promise<string> {
+    const baseSlug = generateSlug(name);
+    let slug = baseSlug;
+    let count = 1;
+
+    while (await this.repo.findOne({ slug })) {
+      slug = `${baseSlug}-${count++}`;
+    }
+
+    return slug;
+  }
+
   protected async beforeCreate(_data: CreateDoctorDto): Promise<void> {
-    const doctorEmail = await this.repo.findOne({ email: _data.email });
-    const doctorPhone = await this.repo.findOne({ phone: _data.phone });
-
-    if (doctorEmail) {
-      throw new ConflictException(
-        buildCrudMessage(Resource.EMAIL, CrudAction.ALREADY_EXISTS),
-      );
-    }
-
-    if (doctorPhone) {
-      throw new ConflictException(
-        buildCrudMessage(Resource.PHONE, CrudAction.ALREADY_EXISTS),
-      );
-    }
+    _data.slug = await this.generateUniqueSlug(_data.name);
   }
 
   protected async beforeDelete(id: string): Promise<void> {

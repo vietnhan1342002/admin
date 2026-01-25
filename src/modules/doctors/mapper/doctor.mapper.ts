@@ -7,18 +7,20 @@ export class DoctorMapper extends BaseMapper<Doctor, ResponseDoctorDto> {
   toResponse(entity: Doctor): ResponseDoctorDto {
     return {
       id: entity.id,
-      email: entity.email,
-      firstName: entity.firstName,
-      lastName: entity.lastName,
-      phone: entity.phone,
-      avatarUrl: entity.avatarUrl || null,
+      slug: entity.slug,
+      externalId: entity.externalId || null,
+      name: entity.name,
+      title: entity.title || null,
       specialty: entity.specialty,
-      department: entity.department,
-      experience: entity.experience,
-      degrees: entity.degrees,
-      status: entity.status,
-      dateAdded: entity.dateAdded,
+      department: entity.department || null,
+      facility: entity.facility || null,
+      experienceYears: entity.experienceYears,
+      languages: entity.languages || [],
+      tags: entity.tags || [],
+      featured: entity.featured,
+      avatar: entity.avatar || null,
       createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
     };
   }
 }
