@@ -22,8 +22,9 @@ export class StaffMapper extends BaseMapper<Staff, StaffResponseDto> {
         : null,
       position: entity.position,
       status: entity.status,
-      dateAdded: entity.dateAdded,
-      createdAt: entity.createdAt,
+      facility: entity.facility,
+      featured: entity.featured,
+      slug: entity.slug,
     };
   }
 }

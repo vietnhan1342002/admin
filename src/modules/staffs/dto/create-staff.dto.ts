@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsDateString,
   IsEnum,
   IsOptional,
@@ -22,4 +23,12 @@ export class CreateStaffDto {
 
   @IsDateString()
   dateAdded: string;
+
+  @IsOptional()
+  @IsString()
+  facility?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  featured?: boolean;
 }

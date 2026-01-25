@@ -14,6 +14,7 @@ import { UserRole } from '../users/enum/user-role.enum';
 import { User } from '../users/entities/user.entity';
 import { hashPassword } from 'src/shared/utils/hashPassword';
 import { StaffStatus } from './enum/staff.enum';
+import { generateSlug } from 'src/shared/Helper/generate-slug.helper';
 
 @Injectable()
 export class StaffsService extends BaseService<
@@ -71,8 +72,6 @@ export class StaffsService extends BaseService<
   override async create(data: CreateStaffDto): Promise<StaffResponseDto> {
     return this.repo.withTransaction(async (manager) => {
       // 1️⃣ Check email user unique
-      console.log(data.user.email);
-
       const existedUser = await manager.findOne(User, {
         where: { email: data.user.email, deletedAt: IsNull() },
       });
@@ -108,11 +107,15 @@ export class StaffsService extends BaseService<
 
       const savedUser = await manager.save(user);
 
+      const slug = generateSlug(savedUser.email);
       // 4️⃣ Create STAFF
       const staff = manager.create(Staff, {
         userId: savedUser.id,
         position: data.position,
         status: StaffStatus.ACTIVE,
+        slug,
+        facility: data.facility,
+        featured: data.featured || false,
         dateAdded: new Date(),
       });
 

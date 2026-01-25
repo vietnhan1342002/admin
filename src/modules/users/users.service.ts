@@ -161,7 +161,9 @@ export class UsersService extends BaseService<
     return this.repo.withTransaction(async (manager) => {
       const user = await manager.findOne(User, { where: { id } });
       if (!user) {
-        buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND);
+        throw new NotFoundException(
+          buildCrudMessage(Resource.USER, CrudAction.NOT_FOUND),
+        );
       }
       await manager.softDelete(User, id);
       await manager.softDelete(Staff, { userId: id });
