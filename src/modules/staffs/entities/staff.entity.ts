@@ -25,6 +25,12 @@ export class Staff extends BaseEntity {
   })
   status: StaffStatus;
 
-  @Column({ name: 'date_added', type: 'date' })
-  dateAdded: Date;
+  @Column({ name: 'slug', length: 150, unique: true })
+  slug: string;
+
+  @Column({ name: 'facility', type: 'varchar', nullable: true })
+  facility: string;
+
+  @Column({ name: 'featured', type: 'boolean', default: false })
+  featured: boolean;
 }
