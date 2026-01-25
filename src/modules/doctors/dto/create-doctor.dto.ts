@@ -1,51 +1,62 @@
 import {
-  IsDateString,
-  IsEmail,
+  IsString,
+  IsOptional,
   IsEnum,
   IsInt,
+  Min,
+  IsArray,
+  IsBoolean,
   IsNotEmpty,
-  IsOptional,
-  IsString,
 } from 'class-validator';
-import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
+import { DoctorSpecialty } from '../enum/doctor.enum';
 
 export class CreateDoctorDto {
-  @IsEmail()
-  email: string;
-
   @IsString()
-  firstName: string;
-
-  @IsString()
-  lastName: string;
-
-  @IsString()
-  phone: string;
+  @IsNotEmpty()
+  slug: string;
 
   @IsOptional()
   @IsString()
-  avatarUrl?: string;
+  externalId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  title?: string;
 
   @IsEnum(DoctorSpecialty)
-  @IsNotEmpty()
   specialty: DoctorSpecialty;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   department?: string;
 
-  @IsNotEmpty()
-  @IsInt()
-  experience?: number;
-
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  degrees?: string;
+  facility?: string;
+
+  @IsInt()
+  @Min(0)
+  experienceYears: number;
 
   @IsOptional()
-  @IsEnum(DoctorStatus)
-  status?: DoctorStatus;
+  @IsArray()
+  @IsString({ each: true })
+  languages?: string[];
 
-  @IsDateString()
-  dateAdded: string;
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  featured?: boolean;
+
+  @IsOptional()
+  @IsString()
+  avatar?: string;
 }

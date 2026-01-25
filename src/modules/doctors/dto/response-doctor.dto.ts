@@ -1,18 +1,29 @@
 // src/modules/doctors/dto/doctor-response.dto.ts
-import { DoctorSpecialty, DoctorStatus } from '../enum/doctor.enum';
+import { DoctorSpecialty } from '../enum/doctor.enum';
+
 export class ResponseDoctorDto {
   id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  avatarUrl?: string | null;
-  specialty: DoctorSpecialty;
-  department?: string;
-  experience?: number;
-  degrees?: string;
-  status: DoctorStatus;
 
-  dateAdded: Date;
+  slug: string;
+  externalId: string | null;
+
+  name: string;
+  title: string | null;
+
+  specialty: DoctorSpecialty;
+
+  department: string | null;
+  facility: string | null;
+
+  experienceYears: number;
+
+  languages: string[];
+  tags: string[];
+
+  featured: boolean;
+
+  avatar: string | null;
+
   createdAt: Date;
+  updatedAt: Date;
 }
