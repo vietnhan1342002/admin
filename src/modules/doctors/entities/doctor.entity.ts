@@ -5,16 +5,16 @@ import { DoctorSpecialty } from '../enum/doctor.enum';
 @Entity('doctors')
 export class Doctor extends BaseEntity {
   @Index({ unique: true })
-  @Column({ length: 150 })
+  @Column({})
   slug: string;
 
-  @Column({ name: 'external_id', length: 100, nullable: true })
+  @Column({ name: 'external_id', nullable: true })
   externalId: string;
 
-  @Column({ length: 200 })
+  @Column({})
   name: string;
 
-  @Column({ length: 200, nullable: true })
+  @Column({ nullable: true })
   title: string;
 
   @Column({
@@ -24,10 +24,10 @@ export class Doctor extends BaseEntity {
   })
   specialty: DoctorSpecialty;
 
-  @Column({ length: 150, nullable: true })
+  @Column({ nullable: true })
   department: string;
 
-  @Column({ length: 150, nullable: true })
+  @Column({ nullable: true })
   facility: string;
 
   @Column({ name: 'experience_years', type: 'int', default: 0 })

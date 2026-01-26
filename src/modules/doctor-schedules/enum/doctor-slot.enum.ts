@@ -1,4 +1,4 @@
-export enum ScheduleSlotStatus {
+export enum DoctorSlotStatus {
   AVAILABLE = 'available',
   BOOKED = 'booked',
   BLOCKED = 'blocked',
