@@ -11,9 +11,9 @@ import {
 import { DoctorSpecialty } from '../enum/doctor.enum';
 
 export class CreateDoctorDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  slug: string;
+  slug?: string;
 
   @IsOptional()
   @IsString()
