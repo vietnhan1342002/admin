@@ -57,4 +57,5 @@ export enum Resource {
   EMAIL = 'email',
   PHONE = 'Số điện thoại',
   DOCTOR_SCHEDULE = 'Lịch làm việc của bác sĩ',
+  DEPARTMENT = 'Phòng ban',
 }

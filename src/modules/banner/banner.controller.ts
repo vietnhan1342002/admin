@@ -7,7 +7,7 @@ import { BannerReponseDto } from './dto/response-banner.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { BannerFilterDto } from './dto/filter-banner.dto';
 
-@Controller('banner')
+@Controller('banners')
 export class BannerController extends BaseController<
   CreateBannerDto,
   UpdateBannerDto,
