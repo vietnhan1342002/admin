@@ -1,47 +1,39 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Delete,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  // Get,
+  // Post,
+  // Body,
+  // Patch,
+  // Param,
+  // Delete,
 } from '@nestjs/common';
 import { DoctorSchedulesService } from './doctor-schedules.service';
-import { CreateDoctorScheduleDto } from './dto/create-schedule.dto';
-import { UpdateDoctorScheduleDto } from './dto/update-schedule.dto';
+import { Public } from 'src/common/decorators/public.decorator';
+import { CreateDoctorScheduleDto } from './dto/create-doctor-schedule.dto';
 
+@Public()
 @Controller('doctor-schedules')
 export class DoctorSchedulesController {
   constructor(
     private readonly doctorSchedulesService: DoctorSchedulesService,
   ) {}
-
   @Post()
-  create(@Body() createDoctorScheduleDto: CreateDoctorScheduleDto) {
-    return this.doctorSchedulesService.create(createDoctorScheduleDto);
-  }
+  @HttpCode(HttpStatus.CREATED)
+  async createDoctorSchedule(
+    @Body() createDoctorScheduleDto: CreateDoctorScheduleDto,
+  ): Promise<{ message: string }> {
+    console.log(createDoctorScheduleDto.data);
 
-  @Get()
-  findAll() {
-    return this.doctorSchedulesService.findAll();
-  }
+    await this.doctorSchedulesService.createDoctorSchedule(
+      createDoctorScheduleDto.data,
+    );
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.doctorSchedulesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateDoctorScheduleDto: UpdateDoctorScheduleDto,
-  ) {
-    return this.doctorSchedulesService.update(+id, updateDoctorScheduleDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.doctorSchedulesService.remove(+id);
+    return {
+      message: 'Doctor schedule created successfully',
+    };
   }
 }
