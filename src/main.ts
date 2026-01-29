@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { AllExceptionsFilter } from './common/exceptions/http-exception.filter';
 import passport from 'passport';
+import { flattenErrors } from './common/exceptions/flatten-errors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,20 +14,14 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
+      transformOptions: {
+        enableImplicitConversion: true, // 🔥 QUAN TRỌNG
+      },
       forbidNonWhitelisted: true,
       exceptionFactory: (errors) => {
-        const messages = errors
-          .map((err) => {
-            if (err.constraints) {
-              return Object.values(err.constraints);
-            }
-            return [`Field ${err.property} không hợp lệ`];
-          })
-          .flat();
-
         return new BadRequestException({
           message: 'Dữ liệu không hợp lệ',
-          errors: messages,
+          errors: flattenErrors(errors),
         });
       },
     }),
