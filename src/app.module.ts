@@ -15,6 +15,7 @@ import { StaffsModule } from './modules/staffs/staffs.module';
 import { DoctorsModule } from './modules/doctors/doctors.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailConfig } from './config/mail.config';
+import { DoctorSchedulesModule } from './modules/doctor-schedules/doctor-schedules.module';
 // import { typeormConfig } from './config/database.config';
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { MailConfig } from './config/mail.config';
     BannerModule,
     StaffsModule,
     DoctorsModule,
+    DoctorSchedulesModule,
   ],
   controllers: [AppController],
   providers: [
