@@ -2,7 +2,7 @@
 import { BaseMapper } from 'src/common/base/base.mapper';
 import { Department } from '../entities/department.entity';
 import { ResponseDepartmentDto } from '../dto/response-department.dto';
-
+import { specialtyMapper } from 'src/modules/specialties/mapper/specialty.mapper';
 export class DepartmentMapper extends BaseMapper<
   Department,
   ResponseDepartmentDto
@@ -14,6 +14,7 @@ export class DepartmentMapper extends BaseMapper<
       name: entity.name,
       block: entity.block || null,
       icon: entity.icon || null,
+      specialties: specialtyMapper.toListResponse(entity.specialties ?? []),
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
