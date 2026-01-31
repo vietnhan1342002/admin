@@ -75,8 +75,11 @@ export class BaseRepository<
     return await this.repo.findOne({ where: { id } as any, ...options });
   }
 
-  async findOne(filter: FindOptionsWhere<T>): Promise<T | null> {
-    return await this.repo.findOne({ where: filter });
+  async findOne(
+    filter: FindOptionsWhere<T>,
+    options?: FindOneOptions<T>,
+  ): Promise<T | null> {
+    return await this.repo.findOne({ where: filter, ...options });
   }
 
   async create(data: DeepPartial<T>): Promise<T> {
