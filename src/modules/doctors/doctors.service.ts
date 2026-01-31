@@ -24,7 +24,7 @@ export class DoctorsService extends BaseService<
     private readonly datasource: DataSource,
     mapper: DoctorMapper,
   ) {
-    super(repo, mapper);
+    super(repo, mapper, Resource.DOCTOR);
   }
 
   async generateUniqueSlug(name: string): Promise<string> {

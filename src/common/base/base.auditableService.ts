@@ -4,6 +4,8 @@ import { BaseRepository } from './base.repository';
 import { UserContextService } from './user.context';
 import { BaseMapper } from './base.mapper';
 import { NotFoundException } from '@nestjs/common';
+import { CrudAction, Resource } from 'src/shared/Enum/messages';
+import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 
 export abstract class AuditableBaseService<
   T extends ObjectLiteral,
@@ -15,8 +17,9 @@ export abstract class AuditableBaseService<
     repository: BaseRepository<T>,
     protected readonly userContext: UserContextService,
     mapper: BaseMapper<T, ResponseDTO>,
+    resource: Resource,
   ) {
-    super(repository, mapper);
+    super(repository, mapper, resource);
   }
 
   async create(data: CreateDTO): Promise<ResponseDTO> {
@@ -36,7 +39,11 @@ export abstract class AuditableBaseService<
       ...data,
       author: this.userContext.userId,
     });
-    if (!result) throw new NotFoundException('Không có dữ liệu.');
+    if (!result) {
+      throw new NotFoundException(
+        buildCrudMessage(this.resource, CrudAction.NOT_FOUND),
+      );
+    }
     return this.mapper.toResponse(result);
   }
 }
