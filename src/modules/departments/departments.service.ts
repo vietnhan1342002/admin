@@ -10,6 +10,7 @@ import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
+import { PaginationParams } from 'src/common/base/base.repository';
 
 @Injectable()
 export class DepartmentsService extends BaseService<
@@ -39,5 +40,17 @@ export class DepartmentsService extends BaseService<
       id,
       buildCrudMessage(Resource.DEPARTMENT, CrudAction.NOT_FOUND),
     );
+  }
+
+  override async findById(id: string) {
+    return await super.findById(id, {
+      relations: ['specialties'],
+    });
+  }
+
+  override async findAll(pagination?: PaginationParams) {
+    return super.findAll(pagination, {
+      relations: ['specialties'],
+    });
   }
 }
