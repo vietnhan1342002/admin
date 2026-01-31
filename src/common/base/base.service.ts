@@ -7,6 +7,8 @@ import {
   PaginationParams,
 } from './base.repository';
 import { IBaseMapper } from 'src/interfaces/IMapper';
+import { CrudAction, Resource } from 'src/shared/Enum/messages';
+import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 
 export abstract class BaseService<
   T extends ObjectLiteral,
@@ -17,6 +19,7 @@ export abstract class BaseService<
   constructor(
     protected readonly repository: BaseRepository<T>,
     protected readonly mapper: IBaseMapper<T, ResponseDTO>,
+    protected readonly resource: Resource,
   ) {}
 
   // hook cho module con
@@ -37,7 +40,11 @@ export abstract class BaseService<
 
   async findById(id: string): Promise<ResponseDTO> {
     const entity = await this.repository.findById(id);
-    if (!entity) throw new NotFoundException('Không có dữ liệu.');
+    if (!entity) {
+      throw new NotFoundException(
+        buildCrudMessage(this.resource, CrudAction.NOT_FOUND),
+      );
+    }
     return this.mapper.toResponse(entity);
   }
 
@@ -50,7 +57,11 @@ export abstract class BaseService<
   async update(id: string, data: UpdateDTO): Promise<ResponseDTO | null> {
     await this.beforeUpdate(id, data);
     const entity = await this.repository.update(id, data);
-    if (!entity) throw new NotFoundException('Không có dữ liệu.');
+    if (!entity) {
+      throw new NotFoundException(
+        buildCrudMessage(this.resource, CrudAction.NOT_FOUND),
+      );
+    }
     return this.mapper.toResponse(entity);
   }
 

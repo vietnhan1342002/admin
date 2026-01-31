@@ -22,7 +22,7 @@ export class BannerService extends BaseService<
     private readonly repo: BannerRepository,
     mapper: BannerMapper,
   ) {
-    super(repo, mapper);
+    super(repo, mapper, Resource.BANNER);
   }
   /**
    * Hook trước khi tạo post

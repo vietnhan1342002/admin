@@ -9,19 +9,20 @@ import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { CreateDepartmentDto } from './dto/create-department.dto';
+import { UpdateDepartmentDto } from './dto/update-department.dto';
 
 @Injectable()
 export class DepartmentsService extends BaseService<
   Department,
-  any,
-  any,
+  CreateDepartmentDto,
+  UpdateDepartmentDto,
   ResponseDepartmentDto
 > {
   constructor(
     private readonly repo: DepartmentRepository,
     mapper: DepartmentMapper,
   ) {
-    super(repo, mapper);
+    super(repo, mapper, Resource.DEPARTMENT);
   }
   protected async beforeCreate(data: CreateDepartmentDto) {
     const existed = await this.repo.findOne({ name: data.name });

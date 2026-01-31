@@ -29,7 +29,7 @@ export class StaffsService extends BaseService<
 
     mapper: StaffMapper,
   ) {
-    super(repo, mapper);
+    super(repo, mapper, Resource.USER);
   }
 
   protected async beforeUpdate(

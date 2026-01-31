@@ -40,7 +40,7 @@ export class UsersService extends BaseService<
     private readonly datasource: DataSource,
     mapper: UserMapper,
   ) {
-    super(repo, mapper);
+    super(repo, mapper, Resource.USER);
   }
 
   private async emailExists(email: string): Promise<boolean> {
