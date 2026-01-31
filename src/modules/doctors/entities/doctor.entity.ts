@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/common/base/base.entity';
-import { Entity, Column, Index } from 'typeorm';
-import { DoctorSpecialty } from '../enum/doctor.enum';
+import { DoctorSpecialty } from 'src/modules/specialties/entities/doctor-specialty.entity';
+import { Entity, Column, Index, OneToMany } from 'typeorm';
 
 @Entity('doctors')
 export class Doctor extends BaseEntity {
@@ -17,12 +17,8 @@ export class Doctor extends BaseEntity {
   @Column({ nullable: true })
   title: string;
 
-  @Column({
-    type: 'enum',
-    enum: DoctorSpecialty,
-    default: DoctorSpecialty.PEDIATRICS,
-  })
-  specialty: DoctorSpecialty;
+  @OneToMany(() => DoctorSpecialty, (doctorSpecialty) => doctorSpecialty.doctor)
+  doctorSpecialties: DoctorSpecialty[];
 
   @Column({ nullable: true })
   department: string;

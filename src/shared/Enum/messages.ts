@@ -58,4 +58,5 @@ export enum Resource {
   PHONE = 'Số điện thoại',
   DOCTOR_SCHEDULE = 'Lịch làm việc của bác sĩ',
   DEPARTMENT = 'Phòng ban',
+  SPECIALTY = 'Chuyên khoa',
 }
