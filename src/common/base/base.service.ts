@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NotFoundException } from '@nestjs/common';
-import { DeepPartial, ObjectLiteral } from 'typeorm';
+import {
+  DeepPartial,
+  FindOneOptions,
+  FindOptionsWhere,
+  ObjectLiteral,
+} from 'typeorm';
 import {
   BaseRepository,
   PaginatedResult,
@@ -29,8 +34,9 @@ export abstract class BaseService<
 
   async findAll(
     pagination?: PaginationParams,
+    options?: FindOneOptions<T>,
   ): Promise<PaginatedResult<ResponseDTO>> {
-    const result = await this.repository.findAll(pagination);
+    const result = await this.repository.findAll(pagination, options);
 
     return {
       ...result,
@@ -38,8 +44,24 @@ export abstract class BaseService<
     };
   }
 
-  async findById(id: string): Promise<ResponseDTO> {
-    const entity = await this.repository.findById(id);
+  async findById(
+    id: string,
+    options?: FindOneOptions<T>,
+  ): Promise<ResponseDTO> {
+    const entity = await this.repository.findById(id, options);
+    if (!entity) {
+      throw new NotFoundException(
+        buildCrudMessage(this.resource, CrudAction.NOT_FOUND),
+      );
+    }
+    return this.mapper.toResponse(entity);
+  }
+
+  async findOne(
+    filter: FindOptionsWhere<T>,
+    options?: FindOneOptions<T>,
+  ): Promise<ResponseDTO> {
+    const entity = await this.repository.findOne(filter, options);
     if (!entity) {
       throw new NotFoundException(
         buildCrudMessage(this.resource, CrudAction.NOT_FOUND),
