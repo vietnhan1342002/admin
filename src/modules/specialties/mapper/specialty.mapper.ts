@@ -18,3 +18,5 @@ export class SpecialtyMapper extends BaseMapper<
     };
   }
 }
+
+export const specialtyMapper = new SpecialtyMapper();
