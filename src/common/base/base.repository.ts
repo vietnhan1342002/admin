@@ -3,6 +3,7 @@ import { IBaseRepository } from 'src/interfaces/IBaseRepository';
 import {
   DeepPartial,
   EntityManager,
+  FindOneOptions,
   FindOptionsWhere,
   IsNull,
   ObjectLiteral,
@@ -34,20 +35,31 @@ export class BaseRepository<
     protected readonly manager?: EntityManager,
   ) {}
 
-  async findAll(params?: PaginationParams): Promise<PaginatedResult<T>> {
+  async findAll(
+    params?: PaginationParams,
+    options?: FindOneOptions<T>,
+  ): Promise<PaginatedResult<T>> {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 10;
     const sortBy: SortKeys<T> =
       (params?.sortBy as SortKeys<T>) || ('createdAt' as SortKeys<T>);
+
     const order = params?.order ?? 'DESC';
-    const filter: FindOptionsWhere<T> = params?.filter ?? {};
+
+    const where: FindOptionsWhere<T> = {
+      ...(params?.filter ?? {}),
+      deletedAt: IsNull() as any,
+    };
 
     const [data, total] = await this.repo.findAndCount({
-      ...filter,
-      deletedAt: IsNull(),
+      where,
       order: { [sortBy]: order } as any,
       skip: (page - 1) * limit,
       take: limit,
+
+      relations: options?.relations,
+      select: options?.select,
+      withDeleted: options?.withDeleted,
     });
 
     return {
@@ -59,8 +71,8 @@ export class BaseRepository<
     };
   }
 
-  async findById(id: string): Promise<T | null> {
-    return await this.repo.findOne({ where: { id } as any });
+  async findById(id: string, options?: FindOneOptions<T>): Promise<T | null> {
+    return await this.repo.findOne({ where: { id } as any, ...options });
   }
 
   async findOne(filter: FindOptionsWhere<T>): Promise<T | null> {
