@@ -1,5 +1,6 @@
 // src/modules/doctors/dto/doctor-response.dto.ts
-import { DoctorSpecialty } from '../enum/doctor.enum';
+
+import { ResponseDoctorSpecialtyDto } from 'src/modules/specialties/dto/response-doctor-specialty.dto';
 
 export class ResponseDoctorDto {
   id: string;
@@ -10,7 +11,7 @@ export class ResponseDoctorDto {
   name: string;
   title: string | null;
 
-  specialty: DoctorSpecialty;
+  doctorSpecialties: ResponseDoctorSpecialtyDto[];
 
   department: string | null;
   facility: string | null;
