@@ -16,6 +16,6 @@ import { DepartmentsModule } from '../departments/departments.module';
   ],
   controllers: [SpecialtiesController],
   providers: [SpecialtiesService, SpecialtyRepository, SpecialtyMapper],
-  exports: [SpecialtiesService],
+  exports: [SpecialtiesService, SpecialtyMapper],
 })
 export class SpecialtiesModule {}

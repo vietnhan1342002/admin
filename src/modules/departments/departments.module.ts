@@ -6,11 +6,17 @@ import { DepartmentsController } from './departments.controller';
 import { DepartmentsService } from './departments.service';
 import { DepartmentRepository } from './repositories/department.repository';
 import { DepartmentMapper } from './mapper/department.mapper';
+import { SpecialtyMapper } from '../specialties/mapper/specialty.mapper';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Department])],
   controllers: [DepartmentsController],
-  providers: [DepartmentsService, DepartmentRepository, DepartmentMapper],
+  providers: [
+    DepartmentsService,
+    DepartmentRepository,
+    DepartmentMapper,
+    SpecialtyMapper,
+  ],
   exports: [DepartmentsService, DepartmentRepository],
 })
 export class DepartmentsModule {}
