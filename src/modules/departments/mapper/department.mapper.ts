@@ -2,11 +2,17 @@
 import { BaseMapper } from 'src/common/base/base.mapper';
 import { Department } from '../entities/department.entity';
 import { ResponseDepartmentDto } from '../dto/response-department.dto';
-import { specialtyMapper } from 'src/modules/specialties/mapper/specialty.mapper';
+import { Injectable } from '@nestjs/common';
+import { SpecialtyMapper } from 'src/modules/specialties/mapper/specialty.mapper';
+
+@Injectable()
 export class DepartmentMapper extends BaseMapper<
   Department,
   ResponseDepartmentDto
 > {
+  constructor(private readonly specialtyMapper: SpecialtyMapper) {
+    super();
+  }
   toResponse(entity: Department): ResponseDepartmentDto {
     return {
       id: entity.id,
@@ -14,7 +20,9 @@ export class DepartmentMapper extends BaseMapper<
       name: entity.name,
       block: entity.block || null,
       icon: entity.icon || null,
-      specialties: specialtyMapper.toListResponse(entity.specialties ?? []),
+      specialties: this.specialtyMapper.toListSlimResponse(
+        entity.specialties ?? [],
+      ),
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };

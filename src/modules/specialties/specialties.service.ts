@@ -10,6 +10,7 @@ import { ResponseSpecialtyDto } from './dto/response-specialty.dto';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { DepartmentsService } from '../departments/departments.service';
+import { PaginationParams } from 'src/common/base/base.repository';
 
 @Injectable()
 export class SpecialtiesService extends BaseService<
@@ -34,5 +35,17 @@ export class SpecialtiesService extends BaseService<
         buildCrudMessage(Resource.SPECIALTY, CrudAction.ALREADY_EXISTS),
       );
     }
+  }
+
+  override async findById(id: string) {
+    return await super.findById(id, {
+      relations: ['doctorSpecialties', 'doctorSpecialties.doctor'],
+    });
+  }
+
+  override async findAll(pagination?: PaginationParams) {
+    return super.findAll(pagination, {
+      relations: ['doctorSpecialties', 'doctorSpecialties.doctor'],
+    });
   }
 }

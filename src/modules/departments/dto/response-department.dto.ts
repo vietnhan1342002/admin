@@ -1,4 +1,4 @@
-import { ResponseSpecialtyDto } from 'src/modules/specialties/dto/response-specialty.dto';
+import { SpecialtySlimResponseDto } from 'src/modules/specialties/dto/response-doctor-specialty.dto';
 
 // src/modules/departments/dto/response-department.dto.ts
 export class ResponseDepartmentDto {
@@ -9,5 +9,5 @@ export class ResponseDepartmentDto {
   icon: string | null;
   createdAt: Date;
   updatedAt: Date;
-  specialties?: ResponseSpecialtyDto[];
+  specialties?: SpecialtySlimResponseDto[];
 }
