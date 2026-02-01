@@ -11,7 +11,7 @@ export class EmailRepository extends BaseRepository<EmailVerificationToken> {
     repo: Repository<EmailVerificationToken>,
     datasource: DataSource,
   ) {
-    super(repo, datasource.createEntityManager());
+    super(repo, EmailVerificationToken, datasource.createEntityManager());
   }
 
   async findTokenWithUser(filter: FindOptionsWhere<EmailVerificationToken>) {

@@ -3,6 +3,7 @@ import { IBaseRepository } from 'src/interfaces/IBaseRepository';
 import {
   DeepPartial,
   EntityManager,
+  EntityTarget,
   FindOneOptions,
   FindOptionsWhere,
   IsNull,
@@ -32,8 +33,13 @@ export class BaseRepository<
 > implements IBaseRepository<T> {
   constructor(
     protected readonly repo: Repository<T>,
+    protected readonly entity: EntityTarget<T>,
     protected readonly manager?: EntityManager,
   ) {}
+
+  protected getRepo(manager?: EntityManager): Repository<T> {
+    return manager ? manager.getRepository(this.entity) : this.repo;
+  }
 
   async findAll(
     params?: PaginationParams,
@@ -82,40 +88,44 @@ export class BaseRepository<
     return await this.repo.findOne({ where: filter, ...options });
   }
 
-  async create(data: DeepPartial<T>): Promise<T> {
-    const entity = this.repo.create(data);
-    return await this.repo.save(entity);
+  create(data: DeepPartial<T>, manager?: EntityManager): Promise<T> {
+    const repository = this.getRepo(manager);
+    const entity = repository.create(data);
+    return repository.save(entity);
   }
 
-  async update(id: string, data: DeepPartial<T>): Promise<T | null> {
-    const entity = await this.findById(id);
+  async update(
+    id: string,
+    data: DeepPartial<T>,
+    manager?: EntityManager,
+  ): Promise<T | null> {
+    const repository = this.getRepo(manager);
+    const entity = await repository.findOne({ where: { id } as any });
     if (!entity) return null;
 
     Object.assign(entity, data);
-    return await this.repo.save(entity);
+    return repository.save(entity);
   }
 
-  async delete(id: string): Promise<boolean> {
-    const result = await this.repo.delete(id);
-    return result.affected ? true : false;
+  async delete(id: string, manager?: EntityManager): Promise<boolean> {
+    const repository = this.getRepo(manager);
+    const result = await repository.delete(id);
+    return !!result.affected;
   }
 
-  async softDelete(id: string): Promise<void> {
-    await this.findById(id);
-    await this.repo.softDelete(id);
+  async softDelete(id: string, manager?: EntityManager): Promise<void> {
+    const repository = this.getRepo(manager);
+    await repository.softDelete(id);
   }
 
-  async restore(id: string): Promise<void> {
-    await this.repo.restore(id);
+  async restore(id: string, manager?: EntityManager): Promise<void> {
+    const repository = this.getRepo(manager);
+    await repository.restore(id);
   }
 
   async withTransaction<R>(
     fn: (manager: EntityManager) => Promise<R>,
   ): Promise<R> {
-    if (!this.manager) {
-      throw new Error('EntityManager is not provided');
-    }
-
-    return await this.manager.transaction(fn);
+    return await this.repo.manager.transaction(fn);
   }
 }

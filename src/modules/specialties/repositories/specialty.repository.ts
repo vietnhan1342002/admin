@@ -11,6 +11,6 @@ export class SpecialtyRepository extends BaseRepository<Specialty> {
     @InjectRepository(Specialty) repo: Repository<Specialty>,
     dataSource: DataSource,
   ) {
-    super(repo, dataSource.createEntityManager());
+    super(repo, Specialty, dataSource.createEntityManager());
   }
 }
