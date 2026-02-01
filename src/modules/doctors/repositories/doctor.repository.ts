@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from 'src/common/base/base.repository';
 import { Doctor } from '../entities/doctor.entity';
@@ -11,7 +10,7 @@ export class DoctorRepository extends BaseRepository<Doctor> {
     @InjectRepository(Doctor) repo: Repository<Doctor>,
     private readonly dataSource: DataSource,
   ) {
-    super(repo, dataSource.createEntityManager());
+    super(repo, Doctor, dataSource.createEntityManager());
   }
 
   async findById(id: string): Promise<Doctor | null> {

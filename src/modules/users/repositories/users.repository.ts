@@ -10,7 +10,7 @@ export class UserRepository extends BaseRepository<User> {
     @InjectRepository(User) repo: Repository<User>,
     datasource: DataSource,
   ) {
-    super(repo, datasource.createEntityManager());
+    super(repo, User, datasource.createEntityManager());
   }
 
   async findByEmail(email: string) {

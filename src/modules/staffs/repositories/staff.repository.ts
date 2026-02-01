@@ -14,7 +14,7 @@ export class StaffRepository extends BaseRepository<Staff> {
     @InjectRepository(Staff) repo: Repository<Staff>,
     private readonly dataSource: DataSource,
   ) {
-    super(repo, dataSource.createEntityManager());
+    super(repo, Staff, dataSource.createEntityManager());
   }
 
   async findAll(params?: PaginationParams): Promise<PaginatedResult<Staff>> {
