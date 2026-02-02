@@ -10,11 +10,10 @@ import { DataSource, IsNull } from 'typeorm';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
-import { UserRole } from '../users/enum/user-role.enum';
 import { User } from '../users/entities/user.entity';
-import { hashPassword } from 'src/shared/utils/hashPassword';
 import { StaffStatus } from './enum/staff.enum';
 import { generateSlug } from 'src/shared/Helper/generate-slug.helper';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class StaffsService extends BaseService<
@@ -28,6 +27,8 @@ export class StaffsService extends BaseService<
     private readonly dataSource: DataSource,
 
     mapper: StaffMapper,
+
+    private readonly userService: UsersService,
   ) {
     super(repo, mapper, Resource.USER);
   }
@@ -70,19 +71,7 @@ export class StaffsService extends BaseService<
   }
 
   override async create(data: CreateStaffDto): Promise<StaffResponseDto> {
-    return this.repo.withTransaction(async (manager) => {
-      // 1️⃣ Check email user unique
-      const existedUser = await manager.findOne(User, {
-        where: { email: data.user.email, deletedAt: IsNull() },
-      });
-
-      if (existedUser) {
-        throw new ConflictException(
-          buildCrudMessage(Resource.EMAIL, CrudAction.ALREADY_EXISTS),
-        );
-      }
-
-      // 3️⃣ Check phone staff unique
+    const result = await this.repo.withTransaction(async (manager) => {
       const existedPhone = await manager.findOne(User, {
         where: { phone: data.user.phone, deletedAt: IsNull() },
       });
@@ -93,39 +82,27 @@ export class StaffsService extends BaseService<
         );
       }
 
-      // 2️⃣ Create USER (auto STAFF)
-      const user = manager.create(User, {
-        email: data.user.email,
-        password: await hashPassword(data.user.password),
-        role: UserRole.STAFF,
-        firstName: data.user.firstName,
-        lastName: data.user.lastName,
-        avatarUrl: data.user.avatarUrl,
-        phone: data.user.phone,
-        isActive: true,
-      });
+      const { user, token } = await this.userService.createUserInternal(
+        manager,
+        data.user,
+      );
 
-      const savedUser = await manager.save(user);
-
-      const slug = generateSlug(savedUser.email);
-      // 4️⃣ Create STAFF
-      const staff = manager.create(Staff, {
-        userId: savedUser.id,
+      const staff = await manager.save(Staff, {
+        userId: user.id,
         position: data.position,
         status: StaffStatus.ACTIVE,
-        slug,
+        slug: generateSlug(user.email),
         facility: data.facility,
-        featured: data.featured || false,
+        featured: data.featured ?? false,
         dateAdded: new Date(),
       });
 
-      const savedStaff = await manager.save(staff);
-
-      const staffWithUser = await manager.findOne(Staff, {
-        where: { id: savedStaff.id },
-        relations: ['user'],
-      });
-      return this.mapper.toResponse(staffWithUser!);
+      return { staff, user, token };
     });
+
+    // ✅ SAU COMMIT → gửi mail
+    await this.userService.sendVerifyEmail(result.user, result.token);
+
+    return this.mapper.toResponse(result.staff);
   }
 }

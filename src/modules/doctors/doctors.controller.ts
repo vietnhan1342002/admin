@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { DoctorsService } from './doctors.service';
 import { BaseController } from 'src/common/base/base.controller';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
@@ -7,10 +15,11 @@ import { ResponseDoctorDto } from './dto/response-doctor.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { DoctorFilterDto } from './dto/filter-doctor.dto';
 import { Reflector } from '@nestjs/core';
-import { SkipDelete } from 'src/common/decorators/skipDelete.decorator';
+import { ResponseAPI } from 'src/shared/Helper/ResposeApi.helper';
+import { HttpMessages } from 'src/shared/Enum/messages';
 
+@Public()
 @Controller('doctors')
-@SkipDelete()
 export class DoctorsController extends BaseController<
   CreateDoctorDto,
   UpdateDoctorDto,
@@ -21,6 +30,14 @@ export class DoctorsController extends BaseController<
     reflector: Reflector,
   ) {
     super(doctorsService, reflector);
+  }
+  @Post()
+  override async create(@Body() dto: CreateDoctorDto) {
+    return ResponseAPI.success(
+      await this.doctorsService.createWithTransaction(dto),
+      HttpMessages.SUCCESS,
+      HttpStatus.CREATED,
+    );
   }
 
   @Public()

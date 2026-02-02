@@ -2,9 +2,10 @@ import { Entity, Column, Index } from 'typeorm';
 import { UserRole } from '../enum/user-role.enum';
 import { BaseEntity } from 'src/common/base/base.entity';
 
-@Entity()
-@Index(['firstName', 'deletedAt'])
-@Index(['lastName', 'deletedAt'])
+@Entity('users')
+@Index('IDX_users_first_name_deleted_at', ['firstName', 'deletedAt'])
+@Index('IDX_users_last_name_deleted_at', ['lastName', 'deletedAt'])
+@Index('UQ_users_email_deleted_at', ['email', 'deletedAt'], { unique: true })
 export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
