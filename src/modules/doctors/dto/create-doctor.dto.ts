@@ -1,14 +1,13 @@
 import {
   IsString,
   IsOptional,
-  IsEnum,
   IsInt,
   Min,
   IsArray,
   IsBoolean,
   IsNotEmpty,
+  IsUUID,
 } from 'class-validator';
-import { DoctorSpecialty } from '../enum/doctor.enum';
 
 export class CreateDoctorDto {
   @IsOptional()
@@ -27,8 +26,8 @@ export class CreateDoctorDto {
   @IsString()
   title?: string;
 
-  @IsEnum(DoctorSpecialty)
-  specialty: DoctorSpecialty;
+  @IsUUID()
+  specialty: string;
 
   @IsOptional()
   @IsString()
