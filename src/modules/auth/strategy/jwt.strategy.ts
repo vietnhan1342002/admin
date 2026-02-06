@@ -12,8 +12,12 @@ interface Payload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(private readonly config: ConfigService) {
-    console.log('JWT_SECRET:', config.get<string>('JWT_SECRET'));
+  constructor(configService: ConfigService) {
+    const secret = configService.get<string>('JWT_SECRET');
+
+    if (!secret) {
+      throw new Error('JWT_SECRET is not defined');
+    }
 
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
@@ -22,7 +26,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
-      secretOrKey: config.get<string>('JWT_SECRET')!,
+      secretOrKey: secret,
     });
   }
 
