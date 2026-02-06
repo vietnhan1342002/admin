@@ -2,6 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 interface Payload {
   id: string;
@@ -11,21 +12,19 @@ interface Payload {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor() {
+  constructor(private readonly config: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) =>
           typeof req?.cookies?.jwt === 'string' ? req.cookies.jwt : null,
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
-
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET as string,
+      secretOrKey: config.get<string>('JWT_SECRET')!,
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async validate(payload: Payload) {
+  validate(payload: Payload) {
     return payload;
   }
 }

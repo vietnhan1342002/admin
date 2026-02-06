@@ -97,7 +97,10 @@ export class AuthService {
     const { id, email, role } = payLoad;
     const access_token = await this.jwtService.signAsync(
       { id, email, role }, // ✔ GIỜ ĐÃ ĐÚNG
-      { secret: process.env.JWT_SECRET, expiresIn: '1h' },
+      {
+        secret: process.env.JWT_SECRET,
+        expiresIn: '100h',
+      },
     );
     const refreshToken = uuidv4();
 
