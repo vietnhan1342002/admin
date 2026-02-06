@@ -38,7 +38,7 @@ export class AuthController {
     const user = await this.authService.login(loginDto);
 
     // Production: set cookie
-    response.cookie('jwt', user.accessToken, {
+    response.cookie('jwt', user.access_token, {
       httpOnly: true,
       path: '/',
       sameSite: 'none',
@@ -47,7 +47,7 @@ export class AuthController {
     });
     // Dev: trả token qua body
     return ResponseAPI.success(
-      { accessToken: user.accessToken },
+      { access_token: user.access_token },
       HttpMessages.LOGIN_SUCCESS,
       HttpStatus.ACCEPTED,
     );

@@ -33,7 +33,12 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   const port = process.env.PORT ?? 8000;
 
-  const devOrigins = ['http://localhost:5173', 'http://103.75.186.152:5000'];
+  const devOrigins = [
+    'http://localhost:5173',
+    'http://103.75.186.152:5000',
+    'http://localhost:5174',
+    'https://p5pkw9x3-5174.asse.devtunnels.ms',
+  ];
 
   const prodOrigins = [
     'https://admin.yourdomain.com',

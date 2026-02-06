@@ -85,8 +85,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       role: user.role,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      name: user.name,
       avatarUrl: user.avatarUrl,
       phone: user.phone,
     };
@@ -96,7 +95,7 @@ export class AuthService {
 
   async generateUserTokens(payLoad: PayLoad) {
     const { id, email, role } = payLoad;
-    const accessToken = await this.jwtService.signAsync(
+    const access_token = await this.jwtService.signAsync(
       { id, email, role }, // ✔ GIỜ ĐÃ ĐÚNG
       { secret: process.env.JWT_SECRET, expiresIn: '1h' },
     );
@@ -104,7 +103,7 @@ export class AuthService {
 
     // await this.storeRefreshToken(refreshToken, userId);
     return {
-      accessToken,
+      access_token,
       refreshToken,
     };
   }

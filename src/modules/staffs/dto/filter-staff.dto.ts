@@ -5,11 +5,7 @@ import { StaffStatus } from '../enum/staff.enum';
 export class StaffFilterDto extends BaseFilterDto {
   @IsOptional()
   @IsString()
-  firstName?: string;
-
-  @IsOptional()
-  @IsString()
-  lastName?: string;
+  name?: string;
 
   @IsOptional()
   @IsString()

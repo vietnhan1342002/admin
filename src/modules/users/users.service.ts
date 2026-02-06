@@ -83,9 +83,8 @@ export class UsersService extends BaseService<
     const user = await manager.save(User, {
       email: dto.email,
       password: await hashPassword(dto.password),
-      role: UserRole.STAFF,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
+      role: dto.role,
+      name: dto.name,
       avatarUrl: dto.avatarUrl,
       phone: dto.phone,
       isVerifyEmail: false,
@@ -111,7 +110,7 @@ export class UsersService extends BaseService<
       subject: 'Xác nhận đăng ký tài khoản',
       template: 'verify-account',
       context: {
-        name: `${user.firstName} ${user.lastName}`,
+        name: `${user.name}`,
         verifyUrl,
         appName: 'ZaCare',
         supportEmail: 'support@zacare.vn',
