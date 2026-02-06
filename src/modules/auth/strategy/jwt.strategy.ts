@@ -13,6 +13,8 @@ interface Payload {
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly config: ConfigService) {
+    console.log('JWT_SECRET:', config.get<string>('JWT_SECRET'));
+
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) =>
