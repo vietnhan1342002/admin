@@ -5,14 +5,12 @@ const isProd = process.env.NODE_ENV === 'production';
 export default new DataSource({
   type: 'mysql',
 
-  host: process.env.MYSQL_HOST,
-  port: Number(process.env.MYSQL_PORT || 3306),
-  username: process.env.MYSQL_USER,
-  password: process.env.MYSQL_PASSWORD,
+  host: process.env.MYSQLHOST,
+  port: Number(process.env.MYSQLPORT || 3306),
+  username: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
   database:
-    process.env.NODE_ENV === 'production'
-      ? process.env.MYSQL_DATABASE
-      : 'admin',
+    process.env.NODE_ENV === 'production' ? process.env.MYSQLDATABASE : 'admin',
 
   entities: isProd
     ? ['dist/modules/**/entities/*.entity.js']
