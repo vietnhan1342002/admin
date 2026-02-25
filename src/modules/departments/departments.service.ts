@@ -44,13 +44,13 @@ export class DepartmentsService extends BaseService<
 
   override async findById(id: string) {
     return await super.findById(id, {
-      relations: ['specialties'],
+      relations: ['specialties', 'group'],
     });
   }
 
   override async findAll(pagination?: PaginationParams) {
     return super.findAll(pagination, {
-      relations: ['specialties'],
+      relations: ['specialties', 'group'],
     });
   }
 }

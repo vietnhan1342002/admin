@@ -20,6 +20,14 @@ export class DepartmentMapper extends BaseMapper<
       name: entity.name,
       block: entity.block || null,
       icon: entity.icon || null,
+      groupId: entity.groupId || null,
+      group: entity.group
+        ? {
+            id: entity.group.id,
+            value: entity.group.value,
+            name: entity.group.name,
+          }
+        : null,
       specialties: this.specialtyMapper.toListSlimResponse(
         entity.specialties ?? [],
       ),

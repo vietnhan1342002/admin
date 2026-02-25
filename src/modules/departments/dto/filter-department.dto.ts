@@ -14,4 +14,8 @@ export class DepartmentFilterDto extends BaseFilterDto {
   @IsOptional()
   @IsString()
   block?: string;
+
+  @IsOptional()
+  @IsString()
+  groupId?: string;
 }

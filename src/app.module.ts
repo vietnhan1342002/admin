@@ -18,6 +18,7 @@ import { MailConfig } from './config/mail.config';
 import { DoctorSchedulesModule } from './modules/doctor-schedules/doctor-schedules.module';
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { SpecialtiesModule } from './modules/specialties/specialties.module';
+import { GroupsModule } from './modules/groups/groups.module';
 // import { typeormConfig } from './config/database.config';
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { SpecialtiesModule } from './modules/specialties/specialties.module';
     DoctorSchedulesModule,
     DepartmentsModule,
     SpecialtiesModule,
+    GroupsModule,
   ],
   controllers: [AppController],
   providers: [
