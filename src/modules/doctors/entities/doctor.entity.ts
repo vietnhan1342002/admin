@@ -1,6 +1,6 @@
 import { BaseEntity } from 'src/common/base/base.entity';
-import { DoctorSpecialty } from 'src/modules/specialties/entities/doctor-specialty.entity';
-import { Entity, Column, Index, OneToMany } from 'typeorm';
+import { Specialty } from 'src/modules/specialties/entities/specialty.entity';
+import { Entity, Column, Index, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity('doctors')
 export class Doctor extends BaseEntity {
@@ -17,8 +17,14 @@ export class Doctor extends BaseEntity {
   @Column({ nullable: true })
   title: string;
 
-  @OneToMany(() => DoctorSpecialty, (doctorSpecialty) => doctorSpecialty.doctor)
-  doctorSpecialties: DoctorSpecialty[];
+  @Column({ name: 'specialty_id' })
+  specialtyId: string;
+
+  @ManyToOne(() => Specialty, (specialty) => specialty.doctors, {
+    onDelete: 'RESTRICT',
+  })
+  @JoinColumn({ name: 'specialty_id' })
+  specialty: Specialty;
 
   @Column({ nullable: true })
   department: string;

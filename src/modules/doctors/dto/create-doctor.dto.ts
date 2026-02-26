@@ -27,7 +27,7 @@ export class CreateDoctorDto {
   title?: string;
 
   @IsUUID()
-  specialty: string;
+  specialtyId: string;
 
   @IsOptional()
   @IsString()

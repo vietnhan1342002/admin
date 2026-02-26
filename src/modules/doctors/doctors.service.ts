@@ -13,7 +13,6 @@ import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 import { generateSlug } from 'src/shared/Helper/generate-slug.helper';
 import { SpecialtiesService } from '../specialties/specialties.service';
 import { PaginationParams } from 'src/common/base/base.repository';
-import { DoctorSpecialty } from '../specialties/entities/doctor-specialty.entity';
 
 @Injectable()
 export class DoctorsService extends BaseService<
@@ -54,20 +53,7 @@ export class DoctorsService extends BaseService<
   ): Promise<void> {
     data.slug = await this.generateUniqueSlug(data.name, manager);
 
-    await this.specialtyService.findById(data.specialty);
-  }
-
-  protected async afterCreate(
-    entity: Doctor,
-    data: CreateDoctorDto,
-    manager?: EntityManager,
-  ): Promise<void> {
-    if (!data.specialty || !manager) return;
-
-    await manager.insert(DoctorSpecialty, {
-      doctor: { id: entity.id },
-      specialty: { id: data.specialty },
-    });
+    await this.specialtyService.findById(data.specialtyId);
   }
 
   protected async beforeDelete(id: string): Promise<void> {
@@ -82,13 +68,13 @@ export class DoctorsService extends BaseService<
 
   override async findById(id: string) {
     return await super.findById(id, {
-      relations: ['doctorSpecialties', 'doctorSpecialties.specialty'],
+      relations: ['specialty'],
     });
   }
 
   override async findAll(pagination?: PaginationParams) {
     return super.findAll(pagination, {
-      relations: ['doctorSpecialties', 'doctorSpecialties.specialty'],
+      relations: ['specialty'],
     });
   }
 }

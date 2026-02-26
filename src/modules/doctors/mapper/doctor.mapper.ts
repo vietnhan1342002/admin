@@ -13,13 +13,14 @@ export class DoctorMapper extends BaseMapper<Doctor, ResponseDoctorDto> {
       externalId: entity.externalId || null,
       name: entity.name,
       title: entity.title || null,
-      specialties:
-        entity.doctorSpecialties?.map((ds) => ({
-          id: ds.specialty.id,
-          value: ds.specialty.value,
-          name: ds.specialty.name,
-          departmentId: ds.specialty.departmentId,
-        })) ?? [],
+      specialty: entity.specialty
+        ? {
+            id: entity.specialty.id,
+            value: entity.specialty.value,
+            name: entity.specialty.name,
+            departmentId: entity.specialty.departmentId,
+          }
+        : null,
 
       department: entity.department || null,
       facility: entity.facility || null,
