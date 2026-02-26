@@ -11,7 +11,7 @@ export class ResponseDoctorDto {
   name: string;
   title: string | null;
 
-  specialties: SpecialtySlimResponseDto[];
+  specialty: SpecialtySlimResponseDto | null;
 
   department: string | null;
   facility: string | null;

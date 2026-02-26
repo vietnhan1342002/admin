@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from 'src/common/base/base.entity';
 import { Department } from 'src/modules/departments/entities/department.entity';
-import { DoctorSpecialty } from './doctor-specialty.entity';
+import { Doctor } from 'src/modules/doctors/entities/doctor.entity';
 
 @Entity('specialties')
 export class Specialty extends BaseEntity {
@@ -27,9 +27,6 @@ export class Specialty extends BaseEntity {
   @JoinColumn({ name: 'department_id' })
   department: Department;
 
-  @OneToMany(
-    () => DoctorSpecialty,
-    (doctorSpecialty) => doctorSpecialty.specialty,
-  )
-  doctorSpecialties: DoctorSpecialty[];
+  @OneToMany(() => Doctor, (doctor) => doctor.specialty)
+  doctors: Doctor[];
 }

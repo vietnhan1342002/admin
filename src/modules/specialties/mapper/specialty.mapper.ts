@@ -17,13 +17,13 @@ export class SpecialtyMapper extends BaseMapper<
       name: entity.name,
       departmentId: entity.departmentId,
       doctors:
-        entity.doctorSpecialties?.map((ds) => ({
-          id: ds.doctor.id,
-          slug: ds.doctor.slug,
-          name: ds.doctor.name,
-          title: ds.doctor.title,
-          avatar: ds.doctor.avatar,
-          featured: ds.doctor.featured,
+        entity.doctors?.map((doctor) => ({
+          id: doctor.id,
+          slug: doctor.slug,
+          name: doctor.name,
+          title: doctor.title,
+          avatar: doctor.avatar,
+          featured: doctor.featured,
         })) ?? [],
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
