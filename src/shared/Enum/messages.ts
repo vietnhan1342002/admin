@@ -60,4 +60,5 @@ export enum Resource {
   DEPARTMENT = 'Phòng ban',
   SPECIALTY = 'Chuyên khoa',
   GROUP = 'Nhóm',
+  NEWS_CATEGORY = 'Danh mục tin tức',
 }

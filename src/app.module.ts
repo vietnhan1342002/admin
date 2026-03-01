@@ -19,6 +19,7 @@ import { DoctorSchedulesModule } from './modules/doctor-schedules/doctor-schedul
 import { DepartmentsModule } from './modules/departments/departments.module';
 import { SpecialtiesModule } from './modules/specialties/specialties.module';
 import { GroupsModule } from './modules/groups/groups.module';
+import { NewsCategoriesModule } from './modules/news-categories/news-categories.module';
 // import { typeormConfig } from './config/database.config';
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { GroupsModule } from './modules/groups/groups.module';
     DepartmentsModule,
     SpecialtiesModule,
     GroupsModule,
+    NewsCategoriesModule,
   ],
   controllers: [AppController],
   providers: [

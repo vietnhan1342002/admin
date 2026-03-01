@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Param,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { BaseController } from 'src/common/base/base.controller';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -7,6 +15,8 @@ import { GroupFilterDto } from './dto/filter-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { GroupsService } from './groups.service';
 import { ResponseGroupDto } from './dto/response-group.dto';
+import { HttpMessages } from 'src/shared/Enum/messages';
+import { ResponseAPI } from 'src/shared/Helper/ResposeApi.helper';
 
 @Public()
 @Controller('groups')
@@ -34,7 +44,11 @@ export class GroupsController extends BaseController<
 
   @Get('tree')
   async findTree() {
-    return this.groupsService.findTree();
+    return ResponseAPI.success(
+      await this.groupsService.findTree(),
+      HttpMessages.SUCCESS,
+      HttpStatus.ACCEPTED,
+    );
   }
 
   @Get(':id')
