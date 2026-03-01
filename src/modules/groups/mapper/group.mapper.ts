@@ -18,7 +18,11 @@ export class GroupMapper extends BaseMapper<Group, ResponseGroupDto> {
   toGroupTreeResponse(groups: Group[]): ResponseGroupsDto[] {
     return groups.map((group) => ({
       id: group.id,
+      value: group.value,
       name: group.name,
+      icon: group.icon || null,
+      createdAt: group.createdAt,
+      updatedAt: group.updatedAt,
 
       departments:
         group.departments?.map((dept) => ({

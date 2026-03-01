@@ -1,39 +1,28 @@
 import { Entity, Column, Index } from 'typeorm';
-import { BannerPosition } from '../enum/bannerPosition.enum';
-import { BannerStatus } from '../enum/bannerStatus.enum';
 import { BaseEntity } from 'src/common/base/base.entity';
 @Entity()
 @Index(['imageUrl', 'deletedAt'], { unique: true })
-@Index(['title', 'deletedAt'], { unique: true })
-@Index(['status', 'deletedAt'])
+@Index(['name', 'deletedAt'], { unique: true })
+@Index(['isActive', 'archive', 'deletedAt'])
 export class Banner extends BaseEntity {
   @Column({ length: 255 })
-  title: string;
+  name: string;
+
+  @Column({ name: 'view_order', type: 'int', default: 1 })
+  viewOrder: number;
+
+  @Column({ name: 'is_active', type: 'boolean', default: true })
+  isActive: boolean;
+
+  @Column({ type: 'varchar', length: 500 })
+  url: string;
+
+  @Column({ type: 'varchar', length: 50, default: 'rgb(219, 234, 254)' })
+  color: string;
+
+  @Column({ type: 'int', default: 0 })
+  archive: number;
 
   @Column({ name: 'image_url', type: 'varchar', length: 500 })
   imageUrl: string;
-
-  @Column({
-    name: 'ridirect_url',
-    type: 'varchar',
-    length: 500,
-    nullable: true,
-  })
-  redirectUrl: string;
-
-  @Column({
-    type: 'enum',
-    enum: BannerPosition,
-    default: BannerPosition.HOMEPAGE_TOP,
-  })
-  position: BannerPosition;
-
-  @Column({ type: 'enum', enum: BannerStatus, default: BannerStatus.ACTIVE })
-  status: BannerStatus;
-
-  @Column({ nullable: true })
-  startAt: Date;
-
-  @Column({ nullable: true })
-  endAt: Date;
 }

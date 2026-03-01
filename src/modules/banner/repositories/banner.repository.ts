@@ -15,8 +15,9 @@ export class BannerRepository extends BaseRepository<Banner> {
   async findActive() {
     return this.repo
       .createQueryBuilder('banner')
-      .where('banner.status = active')
-      .orderBy('ASC')
+      .where('banner.is_active = :isActive', { isActive: true })
+      .andWhere('banner.archive = :archive', { archive: 0 })
+      .orderBy('banner.view_order', 'ASC')
       .getMany();
   }
 }

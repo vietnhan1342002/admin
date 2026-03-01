@@ -28,13 +28,18 @@ export class BannerService extends BaseService<
    * Hook trước khi tạo post
    */
   protected async beforeCreate(data: CreateBannerDto): Promise<void> {
-    // Kiểm tra trùng imageUrl
-    const existed = await this.repo.findOne({
-      imageUrl: data.imageUrl,
-      deletedAt: IsNull(),
-    });
+    const [duplicatedImage, duplicatedName] = await Promise.all([
+      this.repo.findOne({
+        imageUrl: data.imageUrl,
+        deletedAt: IsNull(),
+      }),
+      this.repo.findOne({
+        name: data.name,
+        deletedAt: IsNull(),
+      }),
+    ]);
 
-    if (existed) {
+    if (duplicatedImage || duplicatedName) {
       throw new ConflictException(
         buildCrudMessage(Resource.BANNER, CrudAction.ALREADY_EXISTS),
       );
@@ -54,17 +59,25 @@ export class BannerService extends BaseService<
       buildCrudMessage(Resource.BANNER, CrudAction.NOT_FOUND),
     );
 
-    // Nếu update imageUrl → phải check unique
-    if (data.imageUrl && data.imageUrl !== banner.imageUrl) {
-      const existed = await this.repo.findOne({
-        imageUrl: data.imageUrl,
-        deletedAt: IsNull(),
-      });
-      if (existed) {
-        throw new ConflictException(
-          buildCrudMessage(Resource.BANNER, CrudAction.ALREADY_EXISTS),
-        );
-      }
+    const [duplicatedImage, duplicatedName] = await Promise.all([
+      data.imageUrl && data.imageUrl !== banner.imageUrl
+        ? this.repo.findOne({
+            imageUrl: data.imageUrl,
+            deletedAt: IsNull(),
+          })
+        : null,
+      data.name && data.name !== banner.name
+        ? this.repo.findOne({
+            name: data.name,
+            deletedAt: IsNull(),
+          })
+        : null,
+    ]);
+
+    if (duplicatedImage || duplicatedName) {
+      throw new ConflictException(
+        buildCrudMessage(Resource.BANNER, CrudAction.ALREADY_EXISTS),
+      );
     }
   }
 

@@ -1,15 +1,12 @@
-import { BannerPosition } from '../enum/bannerPosition.enum';
-import { BannerStatus } from '../enum/bannerStatus.enum';
-
 export class BannerReponseDto {
   id: string;
-  title: string;
+  name: string;
+  viewOrder: number;
+  isActive: boolean;
+  url: string;
+  color: string;
+  archive: number;
   imageUrl: string;
-  redirectUrl?: string;
-  position: BannerPosition;
-  status: BannerStatus;
-  startAt?: Date;
-  endAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }

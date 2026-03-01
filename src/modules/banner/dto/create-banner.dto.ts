@@ -1,37 +1,37 @@
 import {
-  IsDateString,
-  IsEnum,
+  IsBoolean,
+  IsInt,
   IsOptional,
   IsString,
+  IsNumber,
   IsUrl,
+  Min,
 } from 'class-validator';
-import { BannerStatus } from '../enum/bannerStatus.enum';
-import { BannerPosition } from '../enum/bannerPosition.enum';
 
 export class CreateBannerDto {
   @IsString()
-  title: string;
+  name: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  viewOrder?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 
   @IsUrl()
-  imageUrl: string;
+  url: string;
 
   @IsOptional()
   @IsString()
-  redirectUrl?: string;
+  color?: string;
 
   @IsOptional()
-  @IsEnum(BannerPosition)
-  position?: BannerPosition; // default sẽ được entity set
+  @IsNumber()
+  archive?: number;
 
-  @IsOptional()
-  @IsEnum(BannerStatus)
-  status?: BannerStatus; // default = ACTIVE
-
-  @IsOptional()
-  @IsDateString()
-  startAt?: Date;
-
-  @IsOptional()
-  @IsDateString()
-  endAt?: Date;
+  @IsUrl()
+  imageUrl: string;
 }

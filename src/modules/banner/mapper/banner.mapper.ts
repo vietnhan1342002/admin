@@ -9,13 +9,13 @@ export class BannerMapper extends BaseMapper<Banner, BannerReponseDto> {
     const dto = new BannerReponseDto();
 
     dto.id = entity.id;
-    dto.title = entity.title;
+    dto.name = entity.name;
+    dto.viewOrder = entity.viewOrder;
+    dto.isActive = entity.isActive;
+    dto.url = entity.url;
+    dto.color = entity.color;
+    dto.archive = entity.archive;
     dto.imageUrl = entity.imageUrl;
-    dto.redirectUrl = entity.redirectUrl;
-    dto.position = entity.position;
-    dto.status = entity.status;
-    dto.startAt = entity.startAt;
-    dto.endAt = entity.endAt;
 
     return dto;
   }

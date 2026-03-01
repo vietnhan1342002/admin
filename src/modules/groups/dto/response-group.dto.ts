@@ -12,7 +12,11 @@ export class ResponseGroupDto {
 
 export class ResponseGroupsDto {
   id: string;
+  value: string;
   name: string;
+  icon: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 
   @Type(() => ResponseDepartmentGroupDto)
   departments: ResponseDepartmentGroupDto[];
