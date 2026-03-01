@@ -12,19 +12,20 @@ import {
   PaginatedResult,
   PaginationParams,
 } from './base.repository';
-import { IBaseMapper } from 'src/interfaces/IMapper';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
+import { BaseMapper } from './base.mapper';
 
 export abstract class BaseService<
   T extends ObjectLiteral,
   CreateDTO extends DeepPartial<T>,
   UpdateDTO extends DeepPartial<T>,
   ResponseDTO,
+  Mapper extends BaseMapper<T, ResponseDTO> = BaseMapper<T, ResponseDTO>,
 > {
   constructor(
     protected readonly repository: BaseRepository<T>,
-    protected readonly mapper: IBaseMapper<T, ResponseDTO>,
+    protected readonly mapper: Mapper,
     protected readonly resource: Resource,
   ) {}
 
