@@ -7,9 +7,10 @@ import { DepartmentsService } from './departments.service';
 import { DepartmentRepository } from './repositories/department.repository';
 import { DepartmentMapper } from './mapper/department.mapper';
 import { SpecialtyMapper } from '../specialties/mapper/specialty.mapper';
+import { GroupsModule } from '../groups/groups.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Department])],
+  imports: [TypeOrmModule.forFeature([Department]), GroupsModule],
   controllers: [DepartmentsController],
   providers: [
     DepartmentsService,

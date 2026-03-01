@@ -12,4 +12,17 @@ export class GroupRepository extends BaseRepository<Group> {
   ) {
     super(repo, Group, dataSource.createEntityManager());
   }
+
+  async findTree(): Promise<Group[]> {
+    return this.repo
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.departments', 'department')
+      .leftJoinAndSelect('department.specialties', 'specialty')
+      .orderBy({
+        'group.name': 'ASC',
+        'department.name': 'ASC',
+        'specialty.name': 'ASC',
+      })
+      .getMany();
+  }
 }

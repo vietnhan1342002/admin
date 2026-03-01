@@ -25,20 +25,16 @@ export class Department extends BaseEntity {
   name: string;
 
   @Column({ nullable: true })
-  block: string;
-
-  @Column({ nullable: true })
   icon: string;
 
-  @Column({ name: 'group_id', nullable: true })
-  groupId: string | null;
-
   @ManyToOne(() => Group, (group) => group.departments, {
-    eager: false,
-    nullable: true,
+    onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'group_id' })
-  group: Group | null;
+  group: Group;
+
+  @Column({ name: 'group_id' })
+  groupId: string;
 
   @OneToMany(() => Specialty, (specialty) => specialty.department)
   specialties: Specialty[];

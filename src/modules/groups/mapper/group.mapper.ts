@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BaseMapper } from 'src/common/base/base.mapper';
 import { Group } from '../entities/group.entity';
-import { ResponseGroupDto } from '../dto/response-group.dto';
+import { ResponseGroupDto, ResponseGroupsDto } from '../dto/response-group.dto';
 
 @Injectable()
 export class GroupMapper extends BaseMapper<Group, ResponseGroupDto> {
@@ -14,5 +14,41 @@ export class GroupMapper extends BaseMapper<Group, ResponseGroupDto> {
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     };
+  }
+  toGroupTreeResponse(groups: Group[]): ResponseGroupsDto[] {
+    return groups.map((group) => ({
+      id: group.id,
+      name: group.name,
+
+      departments:
+        group.departments?.map((dept) => ({
+          id: dept.id,
+          value: dept.value,
+          name: dept.name,
+          icon: dept.icon ?? null,
+          createdAt: dept.createdAt,
+          updatedAt: dept.updatedAt,
+          groupId: dept.groupId ?? null,
+
+          specialties:
+            dept.specialties?.map((sp) => ({
+              id: sp.id,
+              value: sp.value,
+              name: sp.name,
+              departmentId: sp.departmentId,
+              createdAt: sp.createdAt,
+              updatedAt: sp.updatedAt,
+
+              doctors:
+                sp.doctors?.map((doc) => ({
+                  id: doc.id,
+                  name: doc.name,
+                  avatar: doc.avatar,
+                  slug: doc.slug,
+                  featured: doc.featured,
+                })) || [],
+            })) || [],
+        })) || [],
+    }));
   }
 }

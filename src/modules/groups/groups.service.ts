@@ -7,7 +7,7 @@ import { Group } from './entities/group.entity';
 import { GroupMapper } from './mapper/group.mapper';
 import { CreateGroupDto } from './dto/create-group.dto';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { ResponseGroupDto } from './dto/response-group.dto';
+import { ResponseGroupDto, ResponseGroupsDto } from './dto/response-group.dto';
 import { GroupRepository } from './repositories/group.repository';
 import { IsNull } from 'typeorm';
 
@@ -16,7 +16,8 @@ export class GroupsService extends BaseService<
   Group,
   CreateGroupDto,
   UpdateGroupDto,
-  ResponseGroupDto
+  ResponseGroupDto,
+  GroupMapper
 > {
   constructor(
     private readonly repo: GroupRepository,
@@ -43,5 +44,10 @@ export class GroupsService extends BaseService<
       id,
       buildCrudMessage(Resource.GROUP, CrudAction.NOT_FOUND),
     );
+  }
+
+  async findTree(): Promise<ResponseGroupsDto[]> {
+    const groups = await this.repo.findTree();
+    return this.mapper.toGroupTreeResponse(groups);
   }
 }

@@ -20,12 +20,11 @@ export class Specialty extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ name: 'department_id' })
-  departmentId: string;
-
   @ManyToOne(() => Department, { eager: false })
   @JoinColumn({ name: 'department_id' })
   department: Department;
+  @Column({ name: 'department_id' })
+  departmentId: string;
 
   @OneToMany(() => Doctor, (doctor) => doctor.specialty)
   doctors: Doctor[];

@@ -11,13 +11,9 @@ export class CreateDepartmentDto {
 
   @IsOptional()
   @IsString()
-  block?: string;
-
-  @IsOptional()
-  @IsString()
   icon?: string;
 
-  @IsOptional()
+  @IsNotEmpty({ message: 'groupId không được để trống' })
   @IsUUID('4', { message: 'groupId phải là UUID hợp lệ' })
-  groupId?: string;
+  groupId: string;
 }

@@ -32,6 +32,11 @@ export class GroupsController extends BaseController<
     return super.findAll(filterDto);
   }
 
+  @Get('tree')
+  async findTree() {
+    return this.groupsService.findTree();
+  }
+
   @Get(':id')
   override findById(@Param('id') id: string) {
     return super.findById(id);

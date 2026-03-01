@@ -10,7 +10,8 @@ import { buildCrudMessage } from 'src/shared/Helper/message.helper';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
-import { PaginationParams } from 'src/common/base/base.repository';
+// import { PaginationParams } from 'src/common/base/base.repository';
+import { GroupsService } from '../groups/groups.service';
 
 @Injectable()
 export class DepartmentsService extends BaseService<
@@ -21,11 +22,14 @@ export class DepartmentsService extends BaseService<
 > {
   constructor(
     private readonly repo: DepartmentRepository,
+    private groupService: GroupsService,
     mapper: DepartmentMapper,
   ) {
     super(repo, mapper, Resource.DEPARTMENT);
   }
   protected async beforeCreate(data: CreateDepartmentDto) {
+    await this.groupService.findById(data.groupId);
+
     const existed = await this.repo.findOne({ name: data.name });
     if (existed) {
       throw new BadRequestException(
@@ -42,15 +46,15 @@ export class DepartmentsService extends BaseService<
     );
   }
 
-  override async findById(id: string) {
-    return await super.findById(id, {
-      relations: ['specialties', 'group'],
-    });
-  }
+  // override async findById(id: string) {
+  //   return await super.findById(id, {
+  //     relations: ['specialties', 'group'],
+  //   });
+  // }
 
-  override async findAll(pagination?: PaginationParams) {
-    return super.findAll(pagination, {
-      relations: ['specialties', 'group'],
-    });
-  }
+  // override async findAll(pagination?: PaginationParams) {
+  //   return super.findAll(pagination, {
+  //     relations: ['specialties', 'group'],
+  //   });
+  // }
 }
