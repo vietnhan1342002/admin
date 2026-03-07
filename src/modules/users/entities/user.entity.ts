@@ -1,6 +1,7 @@
-import { Entity, Column, Index } from 'typeorm';
+import { Entity, Column, Index, OneToMany } from 'typeorm';
 import { UserRole } from '../enum/user-role.enum';
 import { BaseEntity } from 'src/common/base/base.entity';
+import { News } from 'src/modules/news/entities/news.entity';
 
 @Entity('users')
 @Index('IDX_users_name_deleted_at', ['name', 'deletedAt'])
@@ -32,4 +33,7 @@ export class User extends BaseEntity {
 
   @Column({ length: 20 })
   phone: string;
+
+  @OneToMany(() => News, (news) => news.author)
+  news: News[];
 }

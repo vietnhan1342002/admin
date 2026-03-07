@@ -61,4 +61,6 @@ export enum Resource {
   SPECIALTY = 'Chuyên khoa',
   GROUP = 'Nhóm',
   NEWS_CATEGORY = 'Danh mục tin tức',
+  STAFF = 'Nhân viên',
+  NEWS = 'Tin tức',
 }

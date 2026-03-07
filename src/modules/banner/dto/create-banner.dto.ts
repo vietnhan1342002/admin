@@ -34,4 +34,12 @@ export class CreateBannerDto {
 
   @IsUrl()
   imageUrl: string;
+
+  @IsOptional()
+  @IsString()
+  prevId?: string;
+
+  @IsOptional()
+  @IsString()
+  nextId?: string;
 }

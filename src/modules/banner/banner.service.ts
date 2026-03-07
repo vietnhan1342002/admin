@@ -10,6 +10,11 @@ import { getEntityOrFail } from 'src/shared/utils/getEntityorFaild';
 import { CrudAction, Resource } from 'src/shared/Enum/messages';
 import { IsNull } from 'typeorm';
 import { buildCrudMessage } from 'src/shared/Helper/message.helper';
+import {
+  calculateOrder,
+  ORDER_STEP,
+} from 'src/shared/Helper/caculationViewOrder.helper';
+import { BannerFilterDto } from './dto/filter-banner.dto';
 
 @Injectable()
 export class BannerService extends BaseService<
@@ -40,10 +45,32 @@ export class BannerService extends BaseService<
     ]);
 
     if (duplicatedImage || duplicatedName) {
+      console.log('duplicatedImage:', duplicatedImage);
+      console.log('duplicatedName:', duplicatedName);
+
       throw new ConflictException(
         buildCrudMessage(Resource.BANNER, CrudAction.ALREADY_EXISTS),
       );
     }
+
+    const { prevId, nextId } = data;
+    const [prev, next] = await Promise.all([
+      prevId ? this.repo.findById(prevId) : null,
+      nextId ? this.repo.findById(nextId) : null,
+    ]);
+    let viewOrder: number;
+    if (!prev && !next) {
+      const last = await this.repo.findOne(
+        { deletedAt: IsNull() },
+        {
+          order: { viewOrder: 'DESC' },
+        },
+      );
+      viewOrder = last ? last.viewOrder + ORDER_STEP : ORDER_STEP;
+    } else {
+      viewOrder = calculateOrder(prev, next);
+    }
+    data.viewOrder = viewOrder;
   }
 
   /**
@@ -96,5 +123,13 @@ export class BannerService extends BaseService<
 
   findActive() {
     return this.repo.findActive();
+  }
+
+  override async findAll(filterDto: BannerFilterDto) {
+    return super.findAll({
+      ...filterDto,
+      sortBy: 'viewOrder',
+      order: 'ASC',
+    });
   }
 }

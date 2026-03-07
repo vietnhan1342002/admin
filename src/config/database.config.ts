@@ -22,6 +22,6 @@ export const TypeOrmConfigModule = TypeOrmModule.forRootAsync({
 
     migrations: ['dist/database/migrations/*.js'],
 
-    logging: config.get<string>('NODE_ENV') !== 'production',
+    // logging: config.get<string>('NODE_ENV') !== 'production',
   }),
 });

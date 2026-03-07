@@ -20,6 +20,7 @@ import { DepartmentsModule } from './modules/departments/departments.module';
 import { SpecialtiesModule } from './modules/specialties/specialties.module';
 import { GroupsModule } from './modules/groups/groups.module';
 import { NewsCategoriesModule } from './modules/news-categories/news-categories.module';
+import { NewsModule } from './modules/news/news.module';
 // import { typeormConfig } from './config/database.config';
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { NewsCategoriesModule } from './modules/news-categories/news-categories.
     SpecialtiesModule,
     GroupsModule,
     NewsCategoriesModule,
+    NewsModule,
   ],
   controllers: [AppController],
   providers: [

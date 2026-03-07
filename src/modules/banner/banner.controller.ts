@@ -18,7 +18,6 @@ export class BannerController extends BaseController<
     super(bannerService);
   }
 
-  @Public()
   @Get()
   override findAll(@Query() filterDto: BannerFilterDto) {
     return super.findAll(filterDto);
